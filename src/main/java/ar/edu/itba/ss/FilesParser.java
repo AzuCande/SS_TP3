@@ -20,13 +20,13 @@ public class FilesParser {
         }
     }
 
-    public static Bocha parseDynamicFile() {
+    public static Ball parseDynamicFile() {
         File dynamicFile = new File(RESOURCES_PATH + DYNAMIC_FILE);
-        Bocha whiteBall = null;
+        Ball whiteBall = null;
         try (Scanner scanner = new Scanner(dynamicFile)) {
             if (scanner.hasNextLine()) {
                 String[] line = scanner.nextLine().split(" ");
-                whiteBall = new Bocha(
+                whiteBall = new Ball(
                         Double.parseDouble(line[0]),
                         Double.parseDouble(line[1]),
                         Double.parseDouble(line[2]),
