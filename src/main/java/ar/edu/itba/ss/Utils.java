@@ -5,4 +5,6 @@ public class Utils {
     public static Integer tableHeight;
     public static Integer particleMass;
     public static Integer particleRadius;
+    public static Integer initialXPosition;
+    public static Integer initialYPosition;
 }
