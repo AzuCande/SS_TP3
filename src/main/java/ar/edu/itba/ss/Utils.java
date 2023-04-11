@@ -1,12 +1,21 @@
 package ar.edu.itba.ss;
 
+import java.util.Random;
+
 public class Utils {
-    public static Integer tableWidth;
-    public static Integer tableHeight;
-    public static Integer particleMass;
-    public static Integer particleRadius;
-    public static Integer initialXPosition;
-    public static Integer initialYPosition;
+    public static Double tableWidth = 224.0;
+    public static Double tableHeight = 112.0;
+    public static Double particleMass = 165.0; // gramos
+    public static Double particleRadius = 5.7/2;
+    public static Double whiteBallIntialPosX = 56.0;
+    public static Double whiteBallIntialPosY = 56.0;
+    public static Double whiteBallIntialVelX = 200.0;
+    public static Double whiteBallIntialVelY = 0.0;
+    public static Double firstBallIntialPosX = 168.0;
+    public static Double firstBallIntialPosY = 56.0;
+
+    public static Double topEpsilon = 0.03;
+    public static Double buttomEpsilon = 0.02;
 
     // Returns difference of velocities between two balls
     // Remember: v is a vector
@@ -29,5 +38,13 @@ public class Utils {
 
     public static double getScalarProduct(double[] v1, double[] v2) {
         return v1[0] * v2[0] + v1[1] * v2[1];
+    }
+
+    public static double moveInX = (Utils.particleRadius * 2) + (Utils.topEpsilon / 2);
+    public static double moveInY = Utils.particleRadius + (Utils.topEpsilon / 2);
+
+    public static double randomEpsilonValue() {
+        Random random = new Random();
+        return random.nextDouble() * (topEpsilon - buttomEpsilon) + buttomEpsilon;
     }
 }

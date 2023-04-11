@@ -16,10 +16,10 @@ public class FilesParser {
     public static void parseStaticFile() {
         File staticFile = new File(RESOURCES_PATH + STATIC_FILE);
         try (Scanner scanner = new Scanner(staticFile)) {
-            if (scanner.hasNextLine()) Utils.tableWidth = Integer.parseInt(scanner.nextLine());
-            if (scanner.hasNextLine()) Utils.tableHeight = Integer.parseInt(scanner.nextLine());
-            if (scanner.hasNextLine()) Utils.particleMass = Integer.parseInt(scanner.nextLine());
-            if (scanner.hasNextLine()) Utils.particleRadius = Integer.parseInt(scanner.nextLine());
+            if (scanner.hasNextLine()) Utils.tableWidth = Double.parseDouble(scanner.nextLine());
+            if (scanner.hasNextLine()) Utils.tableHeight = Double.parseDouble(scanner.nextLine());
+            if (scanner.hasNextLine()) Utils.particleMass = Double.parseDouble(scanner.nextLine());
+            if (scanner.hasNextLine()) Utils.particleRadius = Double.parseDouble(scanner.nextLine()) / 2;
         } catch (Exception e) {
             System.err.println("Error while parsing static file");
         }
