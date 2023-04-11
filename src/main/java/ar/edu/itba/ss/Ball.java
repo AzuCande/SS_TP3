@@ -63,8 +63,8 @@ public class Ball {
     }
 
     public boolean checkDistance(Ball b) {
-        double distancia = Math.pow(this.x + b.x, 2) + Math.pow(this.y + b.y, 2);
-        return distancia == Math.pow(this.radius + b.radius, 2);
+        double distance = Math.pow(this.x + b.x, 2) + Math.pow(this.y + b.y, 2);
+        return distance == Math.pow(this.radius + b.radius, 2);
     }
 
     public double collides(Ball b) {
@@ -131,6 +131,11 @@ public class Ball {
         this.vy += jy / this.mass;
         b.vx -= jx / b.mass;
         b.vy -= jy / b.mass;
+    }
+
+    public void move(double dt) {
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
     }
 
 }
