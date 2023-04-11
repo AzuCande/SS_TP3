@@ -1,9 +1,9 @@
-# SS_TP2
+# SS_TP3
 
 ## Integrantes
 * [Kim, Azul Candelaria](https://github.com/AzuCande) - 60264
 * [Larroudé Alvarez, Santiago Andrés](https://github.com/SSanti32) - 60460
-* [Vasquéz Currie, Malena](https://github.com/malevasquez) -
+* [Vasquéz Currie, Malena](https://github.com/malevasquez) - 60072
 
 ## Ejecución
 TODO :)
