@@ -14,18 +14,17 @@ public class Event implements Comparable<Event> {
         this.time = time;
         this.a = a;
         this.b = b;
-        if (a != null && b != null) {
-            // Collision between balls, a and b balls or one of them is a hole
-
-        } else if (a != null) {
-            // Collision with a vertical wall
-            this.collisionCountA = a.getCollisionCount();
-        } else if (b != null) {
-            // Collision with a horizontal wall
-            this.collisionCountB = b.getCollisionCount();
-        } else {
-            // redraw event???
-        }
+//        if (a != null && b != null) {
+//            // Collision between balls, a and b balls or one of them is a hole
+//        } else if (a != null) {
+//            // Collision with a vertical wall
+//            this.collisionCountA = a.getCollisionCount();
+//        } else if (b != null) {
+//            // Collision with a horizontal wall
+//            this.collisionCountB = b.getCollisionCount();
+//        } else {
+//            // redraw event???
+//        }
     }
     public double getTime() {
         return time;

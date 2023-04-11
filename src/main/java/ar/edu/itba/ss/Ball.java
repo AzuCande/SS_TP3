@@ -9,7 +9,7 @@ public class Ball {
     private final double mass;
 
     private final BallType type;
-    private Integer collisionCount;
+    private int collisionCount;
 
     public Ball(double x, double y, double vx, double vy, double radius, double mass, BallType type) {
         this.x = x;
