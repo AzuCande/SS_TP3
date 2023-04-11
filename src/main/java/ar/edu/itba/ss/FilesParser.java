@@ -25,6 +25,7 @@ public class FilesParser {
         }
     }
 
+    // Dynamic file format: x y vx vy
     public static Ball parseDynamicFile() {
         File dynamicFile = new File(RESOURCES_PATH + DYNAMIC_FILE);
         Ball whiteBall = null;
