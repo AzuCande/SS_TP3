@@ -90,7 +90,8 @@ public class Ball {
     public double collidesX() {
         double time = Double.NaN;
         if (this.getVx() > 0) {
-            time = (Utils.tableWidth - this.getRadius() - this.getX()) / this.getVx();
+            time = (Utils.tableWidth - this.getRadius() - this.getX()) /
+                    this.getVx();
         } else {
             time = (0 + this.getRadius() - this.getX()) / this.getVx();
         }
@@ -100,7 +101,8 @@ public class Ball {
     public double collidesY() {
         double time = Double.NaN;
         if (this.getVy() > 0) {
-            time = (Utils.tableHeight - this.getRadius() - this.getY()) / this.getVy();
+            time = (Utils.tableHeight - this.getRadius() - this.getY()) /
+                    this.getVy();
         } else {
             time = (0 + this.getRadius() - this.getY()) / this.getVy();
         }
@@ -116,12 +118,15 @@ public class Ball {
     }
 
     public void bounce(Ball b) {
-        double[] deltaV = Utils.getDeltaV(this.getVx(), this.getVy(), b.getVx(), b.getVy());
-        double[] deltaR = Utils.getDeltaR(this.getX(), this.getY(), b.getX(), b.getY());
+        double[] deltaV = Utils.getDeltaV(this.getVx(), this.getVy(),
+                b.getVx(), b.getVy());
+        double[] deltaR = Utils.getDeltaR(this.getX(), this.getY(),
+                b.getX(), b.getY());
 
         double sigma = this.getRadius() + b.getRadius();
 
-        double j = (2 * this.getMass() * b.getMass() * (Utils.getScalarProduct(deltaV, deltaR))) /
+        double j = (2 * this.getMass() * b.getMass() *
+                (Utils.getScalarProduct(deltaV, deltaR))) /
                 (sigma * (this.getMass() + b.getMass()));
 
         double jx = j * deltaR[0] / sigma;

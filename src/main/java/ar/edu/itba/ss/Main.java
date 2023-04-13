@@ -75,13 +75,13 @@ public class Main {
 
         //TODO: chequear que no haya bochas superpuestas!
 
-//        intializeTable(holes, balls,
+//        initializeTable(holes, balls,
 //                56, 56, 200, 0,
 //                168, 56); // ==>
-        Utils.intializeTable(holes, balls,
-            Utils.whiteBallIntialPosX, Utils.whiteBallIntialPosY,
-            Utils.whiteBallIntialVelX, Utils.whiteBallIntialVelY,
-            Utils.firstBallIntialPosX, Utils.firstBallIntialPosY);
+        Utils.initializeTable(holes, balls,
+            Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
+            Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
+            Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
     }
 
 

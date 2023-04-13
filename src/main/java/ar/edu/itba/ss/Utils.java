@@ -7,15 +7,15 @@ public class Utils {
     public static Double tableHeight = 112.0;
     public static Double particleMass = 165.0; // gramos
     public static Double particleRadius = 5.7/2;
-    public static Double whiteBallIntialPosX = 56.0;
-    public static Double whiteBallIntialPosY = 56.0;
-    public static Double whiteBallIntialVelX = 200.0;
-    public static Double whiteBallIntialVelY = 0.0;
-    public static Double firstBallIntialPosX = 168.0;
-    public static Double firstBallIntialPosY = 56.0;
+    public static Double whiteBallInitialPosX = 56.0;
+    public static Double whiteBallInitialPosY = 56.0;
+    public static Double whiteBallInitialVelX = 200.0;
+    public static Double whiteBallInitialVelY = 0.0;
+    public static Double firstBallInitialPosX = 168.0;
+    public static Double firstBallInitialPosY = 56.0;
 
     public static Double topEpsilon = 0.03;
-    public static Double buttomEpsilon = 0.02;
+    public static Double bottomEpsilon = 0.02;
 
     // Returns difference of velocities between two balls
     // Remember: v is a vector
@@ -45,16 +45,16 @@ public class Utils {
 
     public static double randomEpsilonValue() {
         Random random = new Random();
-        return random.nextDouble() * (topEpsilon - buttomEpsilon) + buttomEpsilon;
+        return random.nextDouble() * (topEpsilon - bottomEpsilon) + bottomEpsilon;
     }
 
-    public static void intializeTable(Ball[] holes, Ball[] balls,
-                                       double whiteBallIntialPosX,
-                                       double whiteBallIntialPosY,
-                                       double whiteBallIntialVelX,
-                                       double whiteBallIntialVelY,
-                                       double firstBallIntialPosX,
-                                       double firstBallIntialPosY) {
+    public static void initializeTable(Ball[] holes, Ball[] balls,
+                                       double whiteBallInitialPosX,
+                                       double whiteBallInitialPosY,
+                                       double whiteBallInitialVelX,
+                                       double whiteBallInitialVelY,
+                                       double firstBallInitialPosX,
+                                       double firstBallInitialPosY) {
         holes[0] = new Ball(0, Utils.tableHeight, 0, 0,
                 Utils.particleRadius * 2, 0, BallType.HOLE);
         holes[1] = new Ball(Utils.tableWidth / 2, Utils.tableHeight,
@@ -71,11 +71,11 @@ public class Utils {
 
         //TODO: check velocity!!
         // white ball
-        balls[0] = new Ball(whiteBallIntialPosX, whiteBallIntialPosY,
-                whiteBallIntialVelX, whiteBallIntialVelY,
+        balls[0] = new Ball(whiteBallInitialPosX, whiteBallInitialPosY,
+                whiteBallInitialVelX, whiteBallInitialVelY,
                 Utils.particleRadius, Utils.particleMass, BallType.BALL);
 
-        balls[1] = new Ball(firstBallIntialPosX, firstBallIntialPosY, 0,
+        balls[1] = new Ball(firstBallInitialPosX, firstBallInitialPosY, 0,
                 0, Utils.particleRadius, Utils.particleMass, BallType.BALL);
 
         //TODO: check relative position!!
