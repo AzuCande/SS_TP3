@@ -1,6 +1,11 @@
 package ar.edu.itba.ss;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Ball {
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
+    private final long id;
     private double x;
     private double y;
     private double vx;
@@ -12,6 +17,7 @@ public class Ball {
     private int collisionCount;
 
     public Ball(double x, double y, double vx, double vy, double radius, double mass, BallType type) {
+        this.id = ID_GENERATOR.getAndIncrement();
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -37,6 +43,9 @@ public class Ball {
     public void setCollisionCount(Integer collisionCount) {
         this.collisionCount = collisionCount;
     }
+    public long getId() {
+        return id;
+    }
     public double getX() {
         return x;
     }
@@ -60,6 +69,19 @@ public class Ball {
     }
     public Integer getCollisionCount() {
         return collisionCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ball ball = (Ball) o;
+        return id == ball.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public boolean checkDistance(Ball b) {
@@ -92,7 +114,7 @@ public class Ball {
         if (this.getVx() > 0) {
             time = (Utils.tableWidth - this.getRadius() - this.getX()) /
                     this.getVx();
-        } else {
+        } else if (this.getVx() < 0) {
             time = (0 + this.getRadius() - this.getX()) / this.getVx();
         }
         return time;
@@ -103,7 +125,7 @@ public class Ball {
         if (this.getVy() > 0) {
             time = (Utils.tableHeight - this.getRadius() - this.getY()) /
                     this.getVy();
-        } else {
+        } else if (this.getVy() < 0) {
             time = (0 + this.getRadius() - this.getY()) / this.getVy();
         }
         return time;

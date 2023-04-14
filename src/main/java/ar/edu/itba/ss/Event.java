@@ -59,5 +59,8 @@ public class Event implements Comparable<Event> {
         }
     }
 
+    public void updateTime(double diff) {
+        this.time -= diff;
+    }
 
 }

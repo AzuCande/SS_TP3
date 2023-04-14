@@ -2,6 +2,8 @@ package ar.edu.itba.ss;
 
 import java.util.PriorityQueue;
 
+import static ar.edu.itba.ss.Utils.*;
+
 public class Main {
     private PriorityQueue<Event> events;
     private double currentTime = 0.0;
@@ -9,6 +11,7 @@ public class Main {
     private static Ball[] balls = new Ball[16];
 
     //TODO: Seguir a partir de aca! Predict sirve para ver que colisiones van a suceder
+    // TODO: Check if separate first prediction from the rest (in the rest cases, update the events)
     private void predict(Ball a) {
         //Check if ball with collide with another in given time
         for(Ball b: balls) {
@@ -18,14 +21,14 @@ public class Main {
         }
 
         // Check if ball will collide with horizontal wall
-        double timeToWallX = a.collidesX();
+        double timeToWallY = a.collidesY();
         a.setCollisionCount(a.getCollisionCount() + 1);
-        events.add(new Event(currentTime + timeToWallX, null, a));
+        events.add(new Event(currentTime + timeToWallY, null, a));
 
         // Check if ball will collide with vertical wall
-        double timeToWallY = a.collidesX();
+        double timeToWallX = a.collidesX();
         a.setCollisionCount(a.getCollisionCount() + 1);
-        events.add(new Event(currentTime + timeToWallY, a, null));
+        events.add(new Event(currentTime + timeToWallX, a, null));
     }
 
     private void simulate() {
@@ -66,6 +69,7 @@ public class Main {
                     predict(b);
                 }
             }
+            events.forEach(e -> e.updateTime(currentTime));
         }
     }
 
