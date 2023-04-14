@@ -1,5 +1,6 @@
 package ar.edu.itba.ss;
 
+import java.util.Optional;
 import java.util.PriorityQueue;
 
 import static ar.edu.itba.ss.Utils.*;
@@ -44,15 +45,20 @@ public class Main {
             Ball b = currentEvent.getB();
             double eventTime = currentEvent.getTime();
             // Invalidated events are discarded
-            if(!currentEvent.wasSuperveningEvent(a, b)) {
+            if(!currentEvent.wasSuperveningEvent()) {
                 // Collision between balls
                 if(a != null && b!= null) {
-                    a.move(eventTime);
-                    b.move(eventTime);
-                    a.bounce(b);
-                    currentTime = eventTime;
-                    predict(a);
-                    predict(b);
+                    Optional<Ball> ballInHole = isBallInHole(a, b);
+                    if(ballInHole.isPresent())
+                        removeEventsWith(ballInHole.get());
+                    else {
+                        a.move(eventTime);
+                        b.move(eventTime);
+                        a.bounce(b);
+                        currentTime = eventTime;
+                        predict(a);
+                        predict(b);
+                    }
                 }
                 // Collision with vertical wall
                 else if(a != null){
@@ -69,10 +75,22 @@ public class Main {
                     predict(b);
                 }
             }
-            events.forEach(e -> e.updateTime(currentTime));
         }
     }
 
+    private void removeEventsWith(Ball toRemove) {
+        events.removeIf(event -> event.getA().equals(toRemove) || event.getB().equals(toRemove));
+    }
+
+    private Optional<Ball> isBallInHole(Ball a, Ball b) {
+        if (a.getType() == BallType.BALL && b.getType() == BallType.BALL)
+            return Optional.empty();
+        if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE)
+            return Optional.of(a);
+        if (b.getType() == BallType.BALL && a.getType() == BallType.HOLE)
+            return Optional.of(b);
+        return Optional.empty();
+    }
 
     public static void main(String[] args) {
         //By default, the PQ is min with natural ordering

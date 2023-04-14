@@ -5,8 +5,8 @@ public class Event implements Comparable<Event> {
     private double time;
     private Ball a;
     private Ball b;
-    private int collisionCountA;
-    private int collisionCountB;
+    private final int collisionCountA;
+    private final int collisionCountB;
 
 
     //VER: https://medium.com/nerd-for-tech/molecular-dynamics-simulation-of-hard-spheres-priority-queue-in-action-with-java-e5e513e57f76
@@ -14,6 +14,8 @@ public class Event implements Comparable<Event> {
         this.time = time;
         this.a = a;
         this.b = b;
+        this.collisionCountA = a.getCollisionCount();
+        this.collisionCountB = b.getCollisionCount();
 //        if (a != null && b != null) {
 //            // Collision between balls, a and b balls or one of them is a hole
 //        } else if (a != null) {
@@ -37,15 +39,9 @@ public class Event implements Comparable<Event> {
     }
     //TODO: check if this is correct
     public int compareTo(Event x) {
-        if (this.time < x.getTime()) {
-            return -1;
-        } else if (this.time > x.getTime()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Double.compare(this.time, x.getTime());
     }
-    public boolean wasSuperveningEvent(Ball a, Ball b) {
+    public boolean wasSuperveningEvent() {
         //TODO:
         // return true if the event has not? been invalidated since creation,
         // and false if the event has been invalidated.
