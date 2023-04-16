@@ -6,16 +6,17 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 
 public class Main {
-    private PriorityQueue<Event> events;
-    private double currentTime = 0.0;
+    private static PriorityQueue<Event> events;
+    private static double currentTime = 0.0;
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
 
     // TODO: Check if separate first prediction from the rest (in the rest cases, update the events)
-    private void predict(Ball a) {
+    private static void createEvents(Ball a) {
         //Check if ball with collide with another in given time
         for(Ball b: balls) {
+            if (a.getType() == BallType.HOLE && b.getType() == BallType.HOLE) continue;
             double timeToCollide = a.collides(b);
             a.setCollisionCount(a.getCollisionCount() + 1);
             events.add(new Event(currentTime + timeToCollide, a, b));
@@ -23,20 +24,42 @@ public class Main {
 
         // Check if ball will collide with horizontal wall
         double timeToWallY = a.collidesY();
-        a.setCollisionCount(a.getCollisionCount() + 1);
-        events.add(new Event(currentTime + timeToWallY, null, a));
+        Event eventToAdd = new Event(currentTime + timeToWallY, null, a);
+        if (!events.contains(eventToAdd)) {
+            events.add(eventToAdd);
+        }
 
         // Check if ball will collide with vertical wall
         double timeToWallX = a.collidesX();
-        a.setCollisionCount(a.getCollisionCount() + 1);
-        events.add(new Event(currentTime + timeToWallX, a, null));
+        eventToAdd = new Event(currentTime + timeToWallX, a, null);
+        if (!events.contains(eventToAdd)) {
+            events.add(eventToAdd);
+        }
+    }
+
+    private static void predict(Ball affectedBall) {
+        if (affectedBall == null) return;
+        for (Event e : events) {
+            if (e.getA() != null && e.getA().equals(affectedBall)) {
+                if (e.getB() == null)
+                    e.updateEvent(currentTime + affectedBall.collidesX());
+                else
+                    e.updateEvent(currentTime + affectedBall.collides(e.getB()));
+            }
+            if (e.getB() != null && e.getB().equals(affectedBall)) {
+                if (e.getA() == null)
+                    e.updateEvent(currentTime + affectedBall.collidesY());
+                else
+                    e.updateEvent(currentTime + affectedBall.collides(e.getA()));
+            }
+        }
     }
 
     private void simulate() {
         events = new PriorityQueue<>();
         // Populate PQ
         for(Ball a: balls) {
-            predict(a);
+            createEvents(a);
         }
         while(events.size() > 0) {
             // Retrieve and delete impending event - will be one with minimum priority
@@ -49,18 +72,21 @@ public class Main {
                 // Collision between balls
                 if(a != null && b!= null) {
                     Optional<Ball> ballInHole = isBallInHole(a, b);
-                    if(ballInHole.isPresent()) {
+                    System.out.println("Is ball in hole? " + ballInHole.isPresent());
+                    if (ballInHole.isPresent()) {
+                        System.out.println("Ball with id " + ballInHole.get().getId() + " entered hole");
                         balls.remove(ballInHole.get());
                         ballsInHoles.add(ballInHole.get());
                         removeEventsWith(ballInHole.get());
+                        System.out.println("There are " + balls.size() + "now in the game");
+                        currentTime = eventTime;
                     }
                     else {
                         a.move(eventTime);
                         b.move(eventTime);
                         a.bounce(b);
                         currentTime = eventTime;
-                        predict(a);
-                        predict(b);
+                        events.add(new Event(currentTime + a.collides(b), a, b));
                     }
                 }
                 // Collision with vertical wall
@@ -68,15 +94,28 @@ public class Main {
                     a.move(eventTime);
                     a.bounceX();
                     currentTime = eventTime;
-                    predict(a);
+                    events.add(new Event(currentTime + a.collidesX(), a, null));
                 }
                 // Collision with horizontal wall
                 else {
                     b.move(eventTime);
                     b.bounceY();
                     currentTime = eventTime;
-                    predict(b);
+                    events.add(new Event(currentTime + b.collidesY(), null, b));
                 }
+                if(a == null) {
+                    System.out.printf("%.2f - Wall, ((%.2f, %.2f)%n", currentTime, b.getX(), b.getY());
+                }
+                else if(b == null) {
+                    System.out.printf("%.2f - ((%.2f, %.2f), Wall%n", currentTime, a.getX(), a.getY());
+                }
+                else {
+                    System.out.printf("%.2f - (%.2f, %.2f), ((%.2f, %.2f)%n", currentTime, a.getX(), a.getY(), b.getX(), b.getY());
+                    System.out.printf("BOLA BLANCA: %.2f - (%.2f, %.2f) v = ((%.2f, %.2f)%n", currentTime, balls.get(0).getX(), balls.get(0).getY(), balls.get(0).getVx(), balls.get(0).getVx());
+                }
+
+                predict(a);
+                predict(b);
             }
         }
     }

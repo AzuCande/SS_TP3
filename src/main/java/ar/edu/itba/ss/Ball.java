@@ -102,7 +102,7 @@ public class Ball {
                 deltaVPow2 *
                 (Utils.getScalarProduct(deltaR, deltaR) - Math.pow(sigma, 2));
 
-        if (deltaVMultiplyDeltaR >= 0 || d < 0) {
+        if (deltaVMultiplyDeltaR > 0 || d < 0) {
             return Double.NaN;
         } else {
             return - (deltaVMultiplyDeltaR + Math.sqrt(d)) / deltaVPow2;
