@@ -1,5 +1,6 @@
 package ar.edu.itba.ss;
 
+import java.util.List;
 import java.util.Random;
 
 public class Utils {
@@ -17,8 +18,9 @@ public class Utils {
     public static Double topEpsilon = 0.03;
     public static Double bottomEpsilon = 0.02;
 
+    private static final Random random = new Random();
+
     // Returns difference of velocities between two balls
-    // Remember: v is a vector
     public static double[] getDeltaV(double vx1, double vy1, double vx2, double vy2) {
         double[] deltaV = new double[2];
         deltaV[0] = vx1 - vx2;
@@ -27,8 +29,6 @@ public class Utils {
     }
 
     // Returns difference of positions between two balls
-    // Remember: r is a vector
-    // TODO: Check if r means position
     public static double[] getDeltaR(double x1, double y1, double x2, double y2) {
         double[] deltaR = new double[2];
         deltaR[0] = x1 - x2;
@@ -40,15 +40,7 @@ public class Utils {
         return v1[0] * v2[0] + v1[1] * v2[1];
     }
 
-    public static double moveInX = (Utils.particleRadius * 2) + (Utils.topEpsilon / 2);
-    public static double moveInY = Utils.particleRadius + (Utils.topEpsilon / 2);
-
-    public static double randomEpsilonValue() {
-        Random random = new Random();
-        return random.nextDouble() * (topEpsilon - bottomEpsilon) + bottomEpsilon;
-    }
-
-    public static void initializeTable(Ball[] holes, Ball[] balls,
+    public static void initializeTable(Ball[] holes, List<Ball> balls,
                                        double whiteBallInitialPosX,
                                        double whiteBallInitialPosY,
                                        double whiteBallInitialVelX,
@@ -69,62 +61,35 @@ public class Utils {
         holes[5] = new Ball(Utils.tableWidth, 0, 0, 0,
                 Utils.particleRadius * 2, 0, BallType.HOLE);
 
-        //TODO: check velocity!!
         // white ball
-        balls[0] = new Ball(whiteBallInitialPosX, whiteBallInitialPosY,
+        balls.add(new Ball(whiteBallInitialPosX, whiteBallInitialPosY,
                 whiteBallInitialVelX, whiteBallInitialVelY,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
+                Utils.particleRadius, Utils.particleMass, BallType.BALL));
 
-        balls[1] = new Ball(firstBallInitialPosX, firstBallInitialPosY, 0,
-                0, Utils.particleRadius, Utils.particleMass, BallType.BALL);
+        // triangle
+        balls.add(new Ball(firstBallInitialPosX, firstBallInitialPosY, 0,
+                0, Utils.particleRadius, Utils.particleMass, BallType.BALL));
+        balls.add(createBall(balls.get(1).getX(), balls.get(1).getY(), 1.0));
+        balls.add(createBall(balls.get(1).getX(), balls.get(1).getY(), -1.0));
+        balls.add(createBall(balls.get(2).getX(), balls.get(2).getY(), 1.0));
+        balls.add(createBall(balls.get(2).getX(), balls.get(2).getY(), -1.0));
+        balls.add(createBall(balls.get(3).getX(), balls.get(3).getY(), -1.0));
+        balls.add(createBall(balls.get(4).getX(), balls.get(4).getY(), 1.0));
+        balls.add(createBall(balls.get(4).getX(), balls.get(4).getY(), -1.0));
+        balls.add(createBall(balls.get(5).getX(), balls.get(5).getY(), -1.0));
+        balls.add(createBall(balls.get(6).getX(), balls.get(6).getY(), -1.0));
+        balls.add(createBall(balls.get(7).getX(), balls.get(7).getY(), 1.0));
+        balls.add(createBall(balls.get(7).getX(), balls.get(7).getY(), -1.0));
+        balls.add(createBall(balls.get(8).getX(), balls.get(8).getY(), -1.0));
+        balls.add(createBall(balls.get(9).getX(), balls.get(9).getY(), -1.0));
+        balls.add(createBall(balls.get(10).getX(), balls.get(10).getY(), -1.0));
+    }
 
-        //TODO: check relative position!!
-        //para entender como son sus posiciones preguntar a Santi con un dibujo
-        balls[2] = new Ball(balls[0].getX() + Utils.moveInX,
-                balls[0].getY() + Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[3] = new Ball(balls[0].getX() + Utils.moveInX,
-                balls[0].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-
-        balls[4] = new Ball(balls[2].getX() + Utils.moveInX,
-                balls[2].getY() + Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        //black ball
-        balls[5] = new Ball(balls[2].getX() + Utils.moveInX,
-                balls[2].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[6] = new Ball(balls[3].getX() + Utils.moveInX,
-                balls[3].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-
-        balls[7] = new Ball(balls[4].getX() + Utils.moveInX,
-                balls[4].getY() + Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[8] = new Ball(balls[4].getX() + Utils.moveInX,
-                balls[4].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[9] = new Ball(balls[6].getX() + Utils.moveInX,
-                balls[6].getY() + Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[10] = new Ball(balls[6].getX() + Utils.moveInX,
-                balls[6].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-
-        balls[11] = new Ball(balls[7].getX() + Utils.moveInX,
-                balls[7].getY() + Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[12] = new Ball(balls[7].getX() + Utils.moveInX,
-                balls[7].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[13] = new Ball(balls[9].getX() + Utils.moveInX,
-                balls[9].getY() + Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[14] = new Ball(balls[9].getX() + Utils.moveInX,
-                balls[9].getY() - Utils.moveInY, 0, 0,
-                Utils.particleRadius, Utils.particleMass, BallType.BALL);
-        balls[15] = new Ball(balls[10].getX() + Utils.moveInX,
-                balls[10].getY() - Utils.moveInY, 0, 0,
+    private static Ball createBall(double relativeBallX, double relativeBallY, double sign) {
+        double epsilon = bottomEpsilon + (topEpsilon - bottomEpsilon) * random.nextDouble();
+        double moveInX = (Utils.particleRadius * 2) + (epsilon / 2);
+        double moveInY = Utils.particleRadius + (epsilon / 2);
+        return new Ball(relativeBallX + moveInX, relativeBallY + moveInY * sign, 0, 0,
                 Utils.particleRadius, Utils.particleMass, BallType.BALL);
     }
 }

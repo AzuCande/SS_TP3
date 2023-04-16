@@ -1,17 +1,17 @@
 package ar.edu.itba.ss;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
-
-import static ar.edu.itba.ss.Utils.*;
 
 public class Main {
     private PriorityQueue<Event> events;
     private double currentTime = 0.0;
-    private static Ball[] holes = new Ball[6];
-    private static Ball[] balls = new Ball[16];
+    private static final Ball[] holes = new Ball[6];
+    private static final List<Ball> balls = new ArrayList<>();
+    public static final List<Ball> ballsInHoles = new ArrayList<>();
 
-    //TODO: Seguir a partir de aca! Predict sirve para ver que colisiones van a suceder
     // TODO: Check if separate first prediction from the rest (in the rest cases, update the events)
     private void predict(Ball a) {
         //Check if ball with collide with another in given time
@@ -33,7 +33,7 @@ public class Main {
     }
 
     private void simulate() {
-        events = new PriorityQueue<Event>();
+        events = new PriorityQueue<>();
         // Populate PQ
         for(Ball a: balls) {
             predict(a);
@@ -45,12 +45,15 @@ public class Main {
             Ball b = currentEvent.getB();
             double eventTime = currentEvent.getTime();
             // Invalidated events are discarded
-            if(!currentEvent.wasSuperveningEvent()) {
+            if(currentEvent.isValid()) {
                 // Collision between balls
                 if(a != null && b!= null) {
                     Optional<Ball> ballInHole = isBallInHole(a, b);
-                    if(ballInHole.isPresent())
+                    if(ballInHole.isPresent()) {
+                        balls.remove(ballInHole.get());
+                        ballsInHoles.add(ballInHole.get());
                         removeEventsWith(ballInHole.get());
+                    }
                     else {
                         a.move(eventTime);
                         b.move(eventTime);

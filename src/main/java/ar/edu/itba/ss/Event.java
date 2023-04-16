@@ -5,8 +5,8 @@ public class Event implements Comparable<Event> {
     private double time;
     private Ball a;
     private Ball b;
-    private final int collisionCountA;
-    private final int collisionCountB;
+    private int collisionCountA;
+    private int collisionCountB;
 
 
     //VER: https://medium.com/nerd-for-tech/molecular-dynamics-simulation-of-hard-spheres-priority-queue-in-action-with-java-e5e513e57f76
@@ -14,19 +14,19 @@ public class Event implements Comparable<Event> {
         this.time = time;
         this.a = a;
         this.b = b;
-        this.collisionCountA = a.getCollisionCount();
-        this.collisionCountB = b.getCollisionCount();
-//        if (a != null && b != null) {
-//            // Collision between balls, a and b balls or one of them is a hole
-//        } else if (a != null) {
-//            // Collision with a vertical wall
-//            this.collisionCountA = a.getCollisionCount();
-//        } else if (b != null) {
-//            // Collision with a horizontal wall
-//            this.collisionCountB = b.getCollisionCount();
-//        } else {
-//            // redraw event???
-//        }
+
+        if (a != null && b != null) {
+            this.collisionCountA = a.getCollisionCount();
+            this.collisionCountB = b.getCollisionCount();
+        } else if (a != null) {
+            // Collision with a vertical wall
+            this.collisionCountA = a.getCollisionCount();
+        } else if (b != null) {
+            // Collision with a horizontal wall
+            this.collisionCountB = b.getCollisionCount();
+        } else {
+            // redraw event???
+        }
     }
     public double getTime() {
         return time;
@@ -41,18 +41,19 @@ public class Event implements Comparable<Event> {
     public int compareTo(Event x) {
         return Double.compare(this.time, x.getTime());
     }
-    public boolean wasSuperveningEvent() {
+    public boolean isValid() {
         //TODO:
         // return true if the event has not? been invalidated since creation,
         // and false if the event has been invalidated.
-        if(a != null && a.getCollisionCount() != this.collisionCountA) {
+        if (a != null && a.getCollisionCount() != this.collisionCountA)
             return false;
-        }
-        else if(b != null && b.getCollisionCount() != this.collisionCountB)
+        if (b != null && b.getCollisionCount() != this.collisionCountB)
             return false;
-        else {
-            return true;
-        }
+
+        if (Main.ballsInHoles.contains(a) || Main.ballsInHoles.contains(b))
+            return false;
+
+        return true;
     }
 
     public void updateTime(double diff) {
