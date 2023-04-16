@@ -18,8 +18,9 @@ public class Main {
         for(Ball b: balls) {
             if (a.getType() == BallType.HOLE && b.getType() == BallType.HOLE) continue;
             double timeToCollide = a.collides(b);
-            a.setCollisionCount(a.getCollisionCount() + 1);
-            events.add(new Event(currentTime + timeToCollide, a, b));
+            Event eventToAdd = new Event(currentTime + timeToCollide, a, b);
+            if (events.contains(eventToAdd)) continue;
+            events.add(eventToAdd);
         }
 
         // Check if ball will collide with horizontal wall
@@ -55,7 +56,7 @@ public class Main {
         }
     }
 
-    private void simulate() {
+    private static void simulate() {
         events = new PriorityQueue<>();
         // Populate PQ
         for(Ball a: balls) {
@@ -82,6 +83,7 @@ public class Main {
                         currentTime = eventTime;
                     }
                     else {
+                        System.out.println("Ball on ball collision");
                         a.move(eventTime);
                         b.move(eventTime);
                         a.bounce(b);
@@ -91,6 +93,7 @@ public class Main {
                 }
                 // Collision with vertical wall
                 else if(a != null){
+                    System.out.println("Ball collides with vertical wall");
                     a.move(eventTime);
                     a.bounceX();
                     currentTime = eventTime;
@@ -98,6 +101,7 @@ public class Main {
                 }
                 // Collision with horizontal wall
                 else {
+                    System.out.println("Ball collides with horizontal wall");
                     b.move(eventTime);
                     b.bounceY();
                     currentTime = eventTime;
@@ -120,11 +124,11 @@ public class Main {
         }
     }
 
-    private void removeEventsWith(Ball toRemove) {
+    private static void removeEventsWith(Ball toRemove) {
         events.removeIf(event -> event.getA().equals(toRemove) || event.getB().equals(toRemove));
     }
 
-    private Optional<Ball> isBallInHole(Ball a, Ball b) {
+    private static Optional<Ball> isBallInHole(Ball a, Ball b) {
         if (a.getType() == BallType.BALL && b.getType() == BallType.BALL)
             return Optional.empty();
         if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE)
@@ -137,16 +141,12 @@ public class Main {
     public static void main(String[] args) {
         //By default, the PQ is min with natural ordering
 
-        //TODO: chequear que no haya bochas superpuestas!
-
-//        initializeTable(holes, balls,
-//                56, 56, 200, 0,
-//                168, 56); // ==>
         Utils.initializeTable(holes, balls,
             Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
             Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
             Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
-    }
 
+        simulate();
+    }
 
 }
