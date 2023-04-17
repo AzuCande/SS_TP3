@@ -9,7 +9,7 @@ public class Event implements Comparable<Event> {
     private Ball b;
     private int collisionCountA;
     private int collisionCountB;
-    private EventType eventType;
+    private final EventType eventType;
 
 
     //VER: https://medium.com/nerd-for-tech/molecular-dynamics-simulation-of-hard-spheres-priority-queue-in-action-with-java-e5e513e57f76

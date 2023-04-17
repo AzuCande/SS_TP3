@@ -23,16 +23,16 @@ public class Utils {
     // Returns difference of velocities between two balls
     public static double[] getDeltaV(double vx1, double vy1, double vx2, double vy2) {
         double[] deltaV = new double[2];
-        deltaV[0] = vx1 - vx2;
-        deltaV[1] = vy1 - vy2;
+        deltaV[0] = vx2 - vx1;
+        deltaV[1] = vy2 - vy1;
         return deltaV;
     }
 
     // Returns difference of positions between two balls
     public static double[] getDeltaR(double x1, double y1, double x2, double y2) {
         double[] deltaR = new double[2];
-        deltaR[0] = x1 - x2;
-        deltaR[1] = y1 - y2;
+        deltaR[0] = x2 - x1;
+        deltaR[1] = y2 - y1;
         return deltaR;
     }
 

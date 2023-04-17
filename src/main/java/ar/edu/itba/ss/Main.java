@@ -35,6 +35,27 @@ public class Main {
         events.add(new Event(currentTime + timeToWallX, EventType.VWALL, a, null));
     }
 
+    private static void updateEventsTime(Ball a) {
+        if (a == null || a.getType() == BallType.HOLE) return;
+
+        // Update time of events that do not contain ball a
+        for (Event e: events) {
+            if ((e.getA() != null && e.getA().equals(a)) || (e.getB() != null && e.getB().equals(a))) continue;
+            switch (e.getEventType()) {
+                case BALL:
+                case HOLE:
+                    e.updateTime(currentTime + e.getA().collides(e.getB()));
+                    break;
+                case HWALL:
+                    e.updateTime(currentTime + e.getB().collidesY());
+                    break;
+                case VWALL:
+                    e.updateTime(currentTime + e.getA().collidesX());
+                    break;
+            }
+        }
+    }
+
     private static void predict(Ball a) {
         if (a == null) return;
 
@@ -54,6 +75,7 @@ public class Main {
 
         while(events.size() > 0) {
             // Retrieve and delete impending event - will be one with minimum priority
+            if (balls.isEmpty()) return;
             Event currentEvent = events.poll();
 
             if (Double.isNaN(currentEvent.getTime())) {
@@ -102,6 +124,8 @@ public class Main {
             predict(a);
             predict(b);
 
+            updateEventsTime(a);
+            updateEventsTime(b);
         }
         System.out.println("Balls size: " + balls.size());
     }
@@ -135,6 +159,8 @@ public class Main {
         balls.forEach(System.out::println);
 
         simulate();
+
+        System.out.println("Finished simulation with all balls in holes");
     }
 
 

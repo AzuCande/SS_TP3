@@ -153,16 +153,16 @@ public class Ball {
 
         double sigma = this.getRadius() + b.getRadius();
 
-        double j = 2 * this.getMass() * b.getMass() * deltaVR /(sigma * (this.getMass() + b.getMass()));
+        double j = (2 * this.getMass() * b.getMass() * deltaVR) /(sigma * (this.getMass() + b.getMass()));
 
-        double jx = j * deltaR[0] / sigma;
-        double jy = j * deltaR[1] / sigma;
+        double jx = (j * deltaR[0]) / sigma;
+        double jy = (j * deltaR[1]) / sigma;
 
-        this.vx += jx / this.mass;
-        this.vy += jy / this.mass;
+        this.vx += (jx / this.mass);
+        this.vy += (jy / this.mass);
 
-        b.vx -= jx / b.mass;
-        b.vy -= jy / b.mass;
+        b.vx -= (jx / b.mass);
+        b.vy -= (jy / b.mass);
 
         this.collisionCount++;
         b.collisionCount++;
