@@ -95,20 +95,20 @@ public class Ball {
         double[] deltaR =
                 Utils.getDeltaR(this.getX(), this.getY(), b.getX(), b.getY());
         double sigma = this.getRadius() + b.getRadius();
-        double deltaVMultiplyDeltaR = Utils.getScalarProduct(deltaV, deltaR);
-        double deltaVPow2 = Utils.getScalarProduct(deltaV, deltaV);
-        //TODO: check value:
-        double d = Math.pow(deltaVMultiplyDeltaR, 2) -
-                deltaVPow2 *
-                (Utils.getScalarProduct(deltaR, deltaR) - Math.pow(sigma, 2));
+        double deltaVR = Utils.getScalarProduct(deltaV, deltaR);
+        double deltaVV = Utils.getScalarProduct(deltaV, deltaV);
+        double deltaRR = Utils.getScalarProduct(deltaR, deltaR);
 
-        if (deltaVMultiplyDeltaR >= 0 || d < 0) {
+        double d = deltaVR * deltaVR - deltaVV * (deltaRR - sigma * sigma);
+
+        if (deltaVR >= 0 || d < 0) {
             return Double.NaN;
-        } else {
-            return - (deltaVMultiplyDeltaR + Math.sqrt(d)) / deltaVPow2;
         }
+
+        return - (deltaVR + Math.sqrt(d)) / deltaVV;
     }
 
+    // return the duration of time until the invoking particle collides with a vertical wall
     public double collidesX() {
         double time = Double.NaN;
         if (this.getVx() > 0) {
@@ -119,7 +119,8 @@ public class Ball {
         }
         return time;
     }
-    
+
+    // return the duration of time until the invoking particle collides with a horizontal wall
     public double collidesY() {
         double time = Double.NaN;
         if (this.getVy() > 0) {
@@ -131,12 +132,16 @@ public class Ball {
         return time;
     }
 
+    // update the invoking particle to simulate it bouncing off a vertical wall
     public void bounceX() {
-        this.setVx(-this.getVx());
+        this.vx = -vx;
+        this.collisionCount++;
     }
 
+    // update the invoking particle to simulate it bouncing off a horizontal wall
     public void bounceY() {
-        this.setVy(-this.getVy());
+        this.vy = -vy;
+        this.collisionCount++;
     }
 
     public void bounce(Ball b) {
@@ -144,25 +149,43 @@ public class Ball {
                 b.getVx(), b.getVy());
         double[] deltaR = Utils.getDeltaR(this.getX(), this.getY(),
                 b.getX(), b.getY());
+        double deltaVR = Utils.getScalarProduct(deltaV, deltaR);
 
         double sigma = this.getRadius() + b.getRadius();
 
-        double j = (2 * this.getMass() * b.getMass() *
-                (Utils.getScalarProduct(deltaV, deltaR))) /
-                (sigma * (this.getMass() + b.getMass()));
+        double j = 2 * this.getMass() * b.getMass() * deltaVR /(sigma * (this.getMass() + b.getMass()));
 
         double jx = j * deltaR[0] / sigma;
         double jy = j * deltaR[1] / sigma;
 
         this.vx += jx / this.mass;
         this.vy += jy / this.mass;
+
         b.vx -= jx / b.mass;
         b.vy -= jy / b.mass;
+
+        this.collisionCount++;
+        b.collisionCount++;
     }
 
     public void move(double dt) {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
+    }
+
+    @Override
+    public String toString() {
+        return "Ball{" +
+                "id=" + id +
+                ", x=" + x +
+                ", y=" + y +
+                ", vx=" + vx +
+                ", vy=" + vy +
+                ", radius=" + radius +
+                ", mass=" + mass +
+                ", type=" + type +
+                ", collisionCount=" + collisionCount +
+                '}';
     }
 
 }
