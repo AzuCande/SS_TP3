@@ -83,13 +83,24 @@ public class Utils {
         balls.add(createBall(balls.get(8).getX(), balls.get(8).getY(), -1.0));
         balls.add(createBall(balls.get(9).getX(), balls.get(9).getY(), -1.0));
         balls.add(createBall(balls.get(10).getX(), balls.get(10).getY(), -1.0));
+
+        balls.forEach(Utils::perturbeBall);
     }
 
     private static Ball createBall(double relativeBallX, double relativeBallY, double sign) {
-        double epsilon = bottomEpsilon + (topEpsilon - bottomEpsilon) * random.nextDouble();
-        double moveInX = (Utils.particleRadius * 2) + (epsilon / 2);
-        double moveInY = Utils.particleRadius + (epsilon / 2);
+        double hypothenus = 2 * (Utils.particleRadius + Utils.topEpsilon);
+        double moveInX = hypothenus * Math.cos(Math.toRadians(30));
+        double moveInY = hypothenus * Math.sin(Math.toRadians(30));
         return new Ball(relativeBallX + moveInX, relativeBallY + moveInY * sign, 0, 0,
                 Utils.particleRadius, Utils.particleMass, BallType.BALL);
+    }
+
+    private static void perturbeBall(Ball ball) {
+        double epsilon = bottomEpsilon + (topEpsilon - bottomEpsilon) * random.nextDouble();
+        double moveInX = epsilon * (random.nextBoolean() ? 1 : -1);
+        double moveInY = epsilon * (random.nextBoolean() ? 1 : -1);
+
+        ball.setX(ball.getX() + moveInX);
+        ball.setY(ball.getY() + moveInY);
     }
 }
