@@ -60,8 +60,11 @@ public class FilesParser {
         return whiteBall;
     }
 
-    public static void createAnimationFile(List<Ball> ballsList, List<Ball> holesList) {
-        File file = new File(RESOURCES_PATH + ANIMATION_FILE);
+    public static void createAnimationFile(String fileFullPath,
+                                           List<Ball> ballsList,
+                                           List<Ball> holesList) {
+//        File file = new File(RESOURCES_PATH + ANIMATION_FILE);
+        File file = new File(fileFullPath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writeAnimationFileLines(0, writer, ballsList, holesList);
         } catch (Exception e) {
@@ -69,11 +72,11 @@ public class FilesParser {
         }
     }
 
-    public static void writeAnimationFile(int time, List<Ball> ballsList,
+    public static void writeAnimationFile(File fileFullPath, int time,
+                                          List<Ball> ballsList,
                                           List<Ball> holesList) {
-        File file = new File(RESOURCES_PATH + ANIMATION_FILE);
         try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(file, true))) {
+                new FileWriter(fileFullPath, true))) {
             writeAnimationFileLines(time, writer, ballsList, holesList);
         } catch (Exception e) {
             System.err.println("Error while writing animation file");
