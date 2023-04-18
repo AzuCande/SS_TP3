@@ -67,7 +67,7 @@ public class Main {
         createCollisions(a);
     }
 
-    private static void simulate() {
+    private static void simulate(int iteration) {
         events = new PriorityQueue<>();
         // Populate PQ
         balls.stream().filter(b -> b.getType() == BallType.BALL).forEach(Main::createCollisions);
@@ -77,6 +77,7 @@ public class Main {
             // Retrieve and delete impending event - will be one with minimum priority
             if (balls.isEmpty()) return;
             Event currentEvent = events.poll();
+            FilesParser.writeAnimationFile(index, balls, List.of(holes));
 
             if (Double.isNaN(currentEvent.getTime())) {
                 System.out.println("NaN event: " + currentEvent + "in index: " + index);
@@ -158,7 +159,19 @@ public class Main {
         System.out.println("Balls: ");
         balls.forEach(System.out::println);
 
-        simulate();
+//        Create animation file
+//        FilesParser = new FilesParser();
+        int iteration = 1;
+        String directoryWhiteBallInitialPosY =
+                Double.toString(Utils.whiteBallInitialPosY);
+
+        String animationFullFileName =
+                FilesParser.RESOURCES_PATH + directoryWhiteBallInitialPosY +
+                        "/" + iteration + FilesParser.ANIMATION_FILE;
+
+
+//        FilesParser.createAnimationFile(balls);
+        simulate(iteration);
 
         System.out.println("Finished simulation with all balls in holes");
     }

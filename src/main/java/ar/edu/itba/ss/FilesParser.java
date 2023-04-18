@@ -16,10 +16,19 @@ public class FilesParser {
     public static void parseStaticFile() {
         File staticFile = new File(RESOURCES_PATH + STATIC_FILE);
         try (Scanner scanner = new Scanner(staticFile)) {
-            if (scanner.hasNextLine()) Utils.tableWidth = Double.parseDouble(scanner.nextLine());
-            if (scanner.hasNextLine()) Utils.tableHeight = Double.parseDouble(scanner.nextLine());
-            if (scanner.hasNextLine()) Utils.particleMass = Double.parseDouble(scanner.nextLine());
-            if (scanner.hasNextLine()) Utils.particleRadius = Double.parseDouble(scanner.nextLine()) / 2;
+            if (scanner.hasNextLine()) {
+                Utils.tableWidth = Double.parseDouble(scanner.nextLine());
+            }
+            if (scanner.hasNextLine()) {
+                Utils.tableHeight = Double.parseDouble(scanner.nextLine());
+            }
+            if (scanner.hasNextLine()) {
+                Utils.particleMass = Double.parseDouble(scanner.nextLine());
+            }
+            if (scanner.hasNextLine()) {
+                Utils.particleRadius =
+                        Double.parseDouble(scanner.nextLine()) / 2;
+            }
         } catch (Exception e) {
             System.err.println("Error while parsing static file");
         }
@@ -39,7 +48,10 @@ public class FilesParser {
                         Double.parseDouble(line[3]),
                         Utils.particleRadius,
                         Utils.particleMass,
-                        BallType.BALL
+                        BallType.BALL,
+                        Integer.parseInt(line[4]),
+                        Integer.parseInt(line[5]),
+                        Integer.parseInt(line[6])
                 );
             }
         } catch (Exception e) {
@@ -48,30 +60,62 @@ public class FilesParser {
         return whiteBall;
     }
 
-    public static void createAnimationFile(List<Ball> ballsList) {
+    public static void createAnimationFile(List<Ball> ballsList, List<Ball> holesList) {
         File file = new File(RESOURCES_PATH + ANIMATION_FILE);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writeAnimationFileLines(0, writer, ballsList);
+            writeAnimationFileLines(0, writer, ballsList, holesList);
         } catch (Exception e) {
             System.err.println("Error while writing animation file");
         }
     }
 
-    public static void writeAnimationFIle(int time, List<Ball> ballsList) {
+    public static void writeAnimationFile(int time, List<Ball> ballsList,
+                                          List<Ball> holesList) {
         File file = new File(RESOURCES_PATH + ANIMATION_FILE);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            writeAnimationFileLines(time, writer, ballsList);
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(file, true))) {
+            writeAnimationFileLines(time, writer, ballsList, holesList);
         } catch (Exception e) {
             System.err.println("Error while writing animation file");
         }
     }
 
-    private static void writeAnimationFileLines(int time, BufferedWriter writer, List<Ball> ballsList) throws IOException {
-        writer.append("Generation: ")
+    private static void writeCollectionToFileLines(BufferedWriter writer,
+                                                   List<Ball> list)
+            throws IOException {
+        for (Ball ball : list) {
+            // TODO: Check correct format for Ovito (moving balls)
+            writer.append(String.valueOf(ball.getX()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getY()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getVx()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getVy()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getRadius()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getMass()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getColorR())).append("\t")
+                    .append(String.valueOf(ball.getColorG())).append("\t")
+                    .append(String.valueOf(ball.getColorB()))
+                    .append("\n");
+        }
+    }
+
+    private static void writeAnimationFileLines(int time, BufferedWriter writer,
+                                                List<Ball> ballsList,
+                                                List<Ball> holesList)
+            throws IOException {
+        int totalBalls = ballsList.size() + holesList.size();
+        writer.append(String.valueOf(totalBalls))
+                .append("\n")
+                .append("Generation: ")
                 .append(String.valueOf(time))
                 .append("\n");
-        for (Ball ball : ballsList) {
-            // TODO: Check correct format for Ovito (moving balls)
-        }
+        writeCollectionToFileLines(writer, holesList);
+        writeCollectionToFileLines(writer, ballsList);
+//        writer.append("\n");
     }
 }

@@ -16,7 +16,13 @@ public class Ball {
     private final BallType type;
     private int collisionCount;
 
-    public Ball(double x, double y, double vx, double vy, double radius, double mass, BallType type) {
+    private int colorR;
+    private int colorG;
+    private int colorB;
+
+    public Ball(double x, double y, double vx, double vy, double radius,
+                double mass, BallType type, int colorR, int colorG,
+                int colorB) {
         this.id = ID_GENERATOR.getAndIncrement();
         this.x = x;
         this.y = y;
@@ -26,6 +32,33 @@ public class Ball {
         this.mass = mass;
         this.type = type;
         this.collisionCount = 0;
+        this.colorR = colorR;
+        this.colorG = colorG;
+        this.colorB = colorB;
+    }
+
+    public void setColorR(int colorR) {
+        this.colorR = colorR;
+    }
+
+    public void setColorG(int colorG) {
+        this.colorG = colorG;
+    }
+
+    public void setColorB(int colorB) {
+        this.colorB = colorB;
+    }
+
+    public int getColorR() {
+        return colorR;
+    }
+
+    public int getColorG() {
+        return colorG;
+    }
+
+    public int getColorB() {
+        return colorB;
     }
 
     public void setX(double x) {
