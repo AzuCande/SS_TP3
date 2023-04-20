@@ -1,6 +1,9 @@
 package ar.edu.itba.ss;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -96,11 +99,11 @@ public class ReRun {
             FilesParser.writeAnimationFile(fileAnimationFile, index, reRunBalls,
                     List.of(reRunHoles));
 
-            if (Double.isNaN(currentEvent.getTime())) {
-                System.out.println(
-                        "NaN event: " + currentEvent + "in index: " + index);
-                return;
-            }
+//            if (Double.isNaN(currentEvent.getTime())) {
+//                System.out.println(
+//                        "NaN event: " + currentEvent + "in index: " + index);
+//                return;
+//            }
 
             // Invalidated events are discarded
             if (!currentEvent.isValid()) continue;
@@ -179,7 +182,7 @@ public class ReRun {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         // Initialize holes
         Utils.initializeHoles(reRunHoles);
         // Initialize balls
@@ -213,8 +216,21 @@ public class ReRun {
         // Create animation file
         File directoryReRun = new File(directory + File.separator + "reRun");
         directoryReRun.mkdir();
+
+        String animationFileName = reRunFileNumber + "_" + FilesParser.ANIMATION_FILE;
+
         File animationFile = new File(directoryReRun + File.separator
-                + reRunFileNumber + "_" + FilesParser.ANIMATION_FILE);
+                + animationFileName);
+
+        try {
+            RandomAccessFile raf = new RandomAccessFile(animationFile, "rw");
+            raf.setLength(0);
+            raf.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         simulate(animationFile);
 

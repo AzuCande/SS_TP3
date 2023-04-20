@@ -94,11 +94,11 @@ public class Main {
             FilesParser.writeAnimationFile(fileAnimationFile, index, balls,
                     List.of(holes));
 
-            if (Double.isNaN(currentEvent.getTime())) {
-                System.out.println(
-                        "NaN event: " + currentEvent + "in index: " + index);
-                return;
-            }
+//            if (Double.isNaN(currentEvent.getTime())) {
+//                System.out.println(
+//                        "NaN event: " + currentEvent + "in index: " + index);
+//                return;
+//            }
 
             // Invalidated events are discarded
             if (!currentEvent.isValid()) continue;
