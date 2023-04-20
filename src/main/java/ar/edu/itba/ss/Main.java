@@ -80,7 +80,7 @@ public class Main {
         createCollisions(a);
     }
 
-    private static void simulate(File fileAnimationFile) {
+    public static void simulate(File fileAnimationFile) {
         events = new PriorityQueue<>();
         // Populate PQ
         balls.stream().filter(b -> b.getType() == BallType.BALL)
@@ -168,7 +168,7 @@ public class Main {
         return Optional.empty();
     }
 
-    private static void reRunSimulation(File fileOfPositions) {
+    public static void reRunSimulation(File fileOfPositions, List<Ball> balls) {
         List<Pair<Double>> positions = FilesParser.readPositionsFile(
                 fileOfPositions);
         for (int i = 0; balls.size() > i && positions.size() > i; i++) {
@@ -181,14 +181,14 @@ public class Main {
         // Initialize holes
         Utils.initializeHoles(holes);
         // Initialize balls
-//        Utils.initializeTable(balls,
-//                Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
-//                Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
-//                Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
+        Utils.initializeTable(balls,
+                Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
+                Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
+                Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
         // Perturbate balls
-//        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
-//                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
-//                Utils.whiteBallInitialVelY);
+        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
+                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
+                Utils.whiteBallInitialVelY);
 
         System.out.println("Holes: ");
         for (Ball hole : holes) {
@@ -228,12 +228,13 @@ public class Main {
          *                 + "3_onlyXandY.txt");
          **/
 
-//        File onlyPositionFile = new File(directory + File.separator
-//                + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
-//        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
-
         File onlyPositionFile = new File(directory + File.separator
-                + "10_onlyXandY.txt");
+                + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
+        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
+
+//        File onlyPositionFile = new File(directory + File.separator
+//                + "10_onlyXandY.txt");
+
 
         /**
          * Esto es para debugear: vamos a copiar en el archivo de solo
@@ -244,15 +245,15 @@ public class Main {
          * Por lo tanto solo nos sirve para tener esas pos inciales de las
          * balls. Para tener una misma corrida
          * OJO con el archivo que ponemos aca!!!! **/
-        reRunSimulation(onlyPositionFile); // funciona!!
+//        reRunSimulation(onlyPositionFile); // funciona!!
         // print all balls
-        System.out.println("Balls: ");
-        balls.forEach(System.out::println);
+//        System.out.println("Balls: ");
+//        balls.forEach(System.out::println);
 
-//        simulate(animationFile);
+
+        simulate(animationFile);
 
         System.out.println("Finished simulation with all balls in holes");
     }
-
 
 }
