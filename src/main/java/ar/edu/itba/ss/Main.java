@@ -1,11 +1,8 @@
 package ar.edu.itba.ss;
 
-import com.sun.nio.sctp.AbstractNotificationHandler;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.PriorityQueue;
 
 public class Main {
@@ -17,6 +14,8 @@ public class Main {
 
     private static void createCollisions(Ball a) {
         if (a == null) return;
+        if (a.getType() == BallType.HOLE) return;
+        if (ballsInHoles.contains(a)) return;
 
         //Check if ball with collide with another in given time
         for (Ball b : balls) {
@@ -45,6 +44,7 @@ public class Main {
 
     private static void updateEventsTime(Ball a) {
         if (a == null || a.getType() == BallType.HOLE) return;
+        if (ballsInHoles.contains(a)) return;
 
         // Update time of events that do not contain ball a
         for (Event e : events) {
@@ -69,6 +69,8 @@ public class Main {
 
     private static void predict(Ball a) {
         if (a == null) return;
+        if (a.getType() == BallType.HOLE) return;
+        if (ballsInHoles.contains(a)) return;
 
         // Filter events to only remain the ones that do not include ball a
         events.removeIf(e -> (e.getA() != null && e.getA().equals(a)) ||
@@ -82,21 +84,17 @@ public class Main {
     private static void simulate(File fileAnimationFile) {
         events = new PriorityQueue<>();
         // Populate PQ
-        balls.stream().filter(b -> b.getType() == BallType.BALL)
-                .forEach(Main::createCollisions);
+        balls.forEach(Main::createCollisions);
         int index = 0;
 
         while (events.size() > 0) {
             // Retrieve and delete impending event - will be one with minimum priority
-            if (balls.isEmpty()) return;
-            Event currentEvent = events.poll();
-//            FilesParser.writeAnimationFile(index, balls, List.of(holes));
-
-            if (Double.isNaN(currentEvent.getTime())) {
-                System.out.println(
-                        "NaN event: " + currentEvent + "in index: " + index);
+            if (balls.isEmpty()) {
+                System.out.println("Finished simulation with " + index +
+                        " iterations");
                 return;
             }
+            Event currentEvent = events.poll();
 
             // Invalidated events are discarded
             if (!currentEvent.isValid()) continue;
@@ -111,7 +109,6 @@ public class Main {
             currentTime = currentEvent.getTime();
 
             // Analyze event
-
             switch (currentEvent.getEventType()) {
                 case BALL:
                     a.bounce(b);
@@ -123,17 +120,16 @@ public class Main {
                     a.bounceX();
                     break;
                 case HOLE:
-                    Optional<Ball> ballInHole = isBallInHole(a, b);
-                    if (ballInHole.isPresent()) {
-                        System.out.println(
-                                "Ball in hole: " + ballInHole.get().toString());
-                        System.out.println("Balls in table: " + balls.size());
-                        System.out.println("Iteration: " + index);
-                        balls.remove(ballInHole.get());
-                        ballsInHoles.add(ballInHole.get());
-                        removeEventsWith(ballInHole.get());
-                    }
+                    System.out.println(
+                            "Ball in hole: " + a.toString());
+                    System.out.println("Balls in table: " + balls.size());
+                    System.out.println("Iteration: " + index);
+                    balls.remove(a);
+                    ballsInHoles.add(a);
                     break;
+                default:
+                    throw new IllegalStateException(
+                            "Unexpected value: " + currentEvent.getEventType());
             }
             FilesParser.writeAnimationFile(fileAnimationFile, index, balls,
                     List.of(holes));
@@ -146,26 +142,6 @@ public class Main {
             updateEventsTime(b);
         }
         System.out.println("Balls size: " + balls.size());
-    }
-
-    private static void removeEventsWith(Ball toRemove) {
-        events.removeIf(event ->
-                (event.getA() != null && event.getA().equals(toRemove)) ||
-                        (event.getB() != null &&
-                                event.getB().equals(toRemove)));
-    }
-
-    private static Optional<Ball> isBallInHole(Ball a, Ball b) {
-        if (a.getType() == BallType.BALL && b.getType() == BallType.BALL) {
-            return Optional.empty();
-        }
-        if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE) {
-            return Optional.of(a);
-        }
-        if (b.getType() == BallType.BALL && a.getType() == BallType.HOLE) {
-            return Optional.of(b);
-        }
-        return Optional.empty();
     }
 
     public static void main(String[] args) {
