@@ -14,6 +14,7 @@ public class Main {
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
+    private static final int iterationWithThatYPosOfWhiteBall = 1;
 
     private static void createCollisions(Ball a) {
         if (a == null) return;
@@ -90,7 +91,8 @@ public class Main {
             // Retrieve and delete impending event - will be one with minimum priority
             if (balls.isEmpty()) return;
             Event currentEvent = events.poll();
-//            FilesParser.writeAnimationFile(index, balls, List.of(holes));
+            FilesParser.writeAnimationFile(fileAnimationFile, index, balls,
+                    List.of(holes));
 
             if (Double.isNaN(currentEvent.getTime())) {
                 System.out.println(
@@ -135,8 +137,6 @@ public class Main {
                     }
                     break;
             }
-            FilesParser.writeAnimationFile(fileAnimationFile, index, balls,
-                    List.of(holes));
             index++;
 
             predict(a);
@@ -168,11 +168,27 @@ public class Main {
         return Optional.empty();
     }
 
+    private static void reRunSimulation(File fileOfPositions) {
+        List<Pair<Double>> positions = FilesParser.readPositionsFile(
+                fileOfPositions);
+        for (int i = 0; balls.size() > i && positions.size() > i; i++) {
+            balls.get(i).setX(positions.get(i).getFirst());
+            balls.get(i).setY(positions.get(i).getSecond());
+        }
+    }
+
     public static void main(String[] args) {
-        Utils.initializeTable(holes, balls,
-                Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
-                Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
-                Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
+        // Initialize holes
+        Utils.initializeHoles(holes);
+        // Initialize balls
+//        Utils.initializeTable(balls,
+//                Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
+//                Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
+//                Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
+        // Perturbate balls
+//        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
+//                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
+//                Utils.whiteBallInitialVelY);
 
         System.out.println("Holes: ");
         for (Ball hole : holes) {
@@ -183,8 +199,6 @@ public class Main {
         balls.forEach(System.out::println);
 
 //        Create animation file
-//        FilesParser = new FilesParser();
-        int iterationWithThatYPosOfWhiteBall = 2;
         String directoryWhiteBallInitialPosY =
                 Double.toString(Utils.whiteBallInitialPosY);
         // Create directory if it does not exist
@@ -193,13 +207,49 @@ public class Main {
                         directoryWhiteBallInitialPosY);
         directory.mkdir();
         String animationFullFileName = iterationWithThatYPosOfWhiteBall + "_" +
-                        FilesParser.ANIMATION_FILE;
+                FilesParser.ANIMATION_FILE;
         File animationFile =
                 new File(directory + File.separator + animationFullFileName);
 
-        FilesParser.writeAnimationFile(animationFile, 0, balls,
-                List.of(holes));
-        simulate(animationFile);
+        // Si queremos volver a correr la animacion de vuelta
+        // Para el debug
+        /**
+         * Si queremos tener la misma corrida:
+         * 1) Correr el programa con esto comentado:
+         *
+         * File onlyPositionFile = new File(directory + File.separator
+         *                 + "3_onlyXandY.txt");
+         * 2) Despues poner en donde dice "3_onlyXandY.txt" el nombre del
+         * archivo que queremos que se use para la corrida.
+         * 3) Comentar las 2 lineas de arriba de donde tenemos el archivo
+         * hardcodeado con el numero que queremos volver a correr
+         * 4) Descomentar esta linea:
+         * File onlyPositionFile = new File(directory + File.separator
+         *                 + "3_onlyXandY.txt");
+         **/
+
+//        File onlyPositionFile = new File(directory + File.separator
+//                + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
+//        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
+
+        File onlyPositionFile = new File(directory + File.separator
+                + "10_onlyXandY.txt");
+
+        /**
+         * Esto es para debugear: vamos a copiar en el archivo de solo
+         * posiciones las mismas pocisiones que se crean en balls. Entonces
+         * aunque cambiemos el nombre del archivo no cambia en nada. Solo
+         * pisamos ese archivo con las pos de esa corrida de balls.
+         *
+         * Por lo tanto solo nos sirve para tener esas pos inciales de las
+         * balls. Para tener una misma corrida
+         * OJO con el archivo que ponemos aca!!!! **/
+        reRunSimulation(onlyPositionFile); // funciona!!
+        // print all balls
+        System.out.println("Balls: ");
+        balls.forEach(System.out::println);
+
+//        simulate(animationFile);
 
         System.out.println("Finished simulation with all balls in holes");
     }

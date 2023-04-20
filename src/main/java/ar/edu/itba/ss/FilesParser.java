@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -83,12 +84,28 @@ public class FilesParser {
         }
     }
 
+    public static void writeOnlyPositions(File fileFullPath,
+                                          List<Ball> ballsList) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(fileFullPath))) {
+            for (Ball ball : ballsList) {
+                writer.append(String.valueOf(ball.getX()))
+                        .append("\t")
+                        .append(String.valueOf(ball.getY()))
+                        .append("\n");
+            }
+        } catch (Exception e) {
+            System.err.println("Error while writing animation file");
+        }
+    }
+
     private static void writeCollectionToFileLines(BufferedWriter writer,
                                                    List<Ball> list)
             throws IOException {
         for (Ball ball : list) {
-            // TODO: Check correct format for Ovito (moving balls)
-            writer.append(String.valueOf(ball.getX()))
+            writer.append(String.valueOf(ball.getId()))
+                    .append("\t")
+                    .append(String.valueOf(ball.getX()))
                     .append("\t")
                     .append(String.valueOf(ball.getY()))
                     .append("\t")
@@ -120,5 +137,22 @@ public class FilesParser {
         writeCollectionToFileLines(writer, holesList);
         writeCollectionToFileLines(writer, ballsList);
 //        writer.append("\n");
+    }
+
+    public static List<Pair<Double>> readPositionsFile(File fileOfPositions) {
+        List<Pair<Double>> lines = new ArrayList<>();
+        try (Scanner scanner = new Scanner(fileOfPositions)) {
+            while (scanner.hasNextLine()) {
+                String[] line = scanner.nextLine().split("\t");
+                lines.add(new Pair<>(
+                        Double.parseDouble(line[0]),
+                        Double.parseDouble(line[1])
+                ));
+            }
+        } catch (Exception e) {
+            System.err.println("Error while reading positions file");
+        }
+
+        return lines;
     }
 }
