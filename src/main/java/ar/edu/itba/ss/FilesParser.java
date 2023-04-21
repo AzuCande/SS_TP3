@@ -52,7 +52,8 @@ public class FilesParser {
                         BallType.BALL,
                         Integer.parseInt(line[4]),
                         Integer.parseInt(line[5]),
-                        Integer.parseInt(line[6])
+                        Integer.parseInt(line[6]),
+                        "Cu"
                 );
             }
         } catch (Exception e) {
@@ -120,6 +121,8 @@ public class FilesParser {
                     .append(String.valueOf(ball.getColorR())).append("\t")
                     .append(String.valueOf(ball.getColorG())).append("\t")
                     .append(String.valueOf(ball.getColorB()))
+                    .append(String.valueOf(ball.getColorG())).append("\t")
+                    .append(String.valueOf(ball.getSymbol()))
                     .append("\n");
         }
     }

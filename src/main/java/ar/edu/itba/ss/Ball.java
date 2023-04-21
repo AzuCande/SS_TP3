@@ -20,9 +20,11 @@ public class Ball {
     private int colorG;
     private int colorB;
 
+    private String symbol;
+
     public Ball(double x, double y, double vx, double vy, double radius,
                 double mass, BallType type, int colorR, int colorG,
-                int colorB) {
+                int colorB, String symbol) {
         this.id = ID_GENERATOR.getAndIncrement();
         this.x = x;
         this.y = y;
@@ -35,6 +37,7 @@ public class Ball {
         this.colorR = colorR;
         this.colorG = colorG;
         this.colorB = colorB;
+        this.symbol = symbol;
     }
 
     public void setColorR(int colorR) {
@@ -60,6 +63,9 @@ public class Ball {
     public int getColorB() {
         return colorB;
     }
+
+    public String getSymbol() { return symbol; }
+
 
     public void setX(double x) {
         this.x = x;
