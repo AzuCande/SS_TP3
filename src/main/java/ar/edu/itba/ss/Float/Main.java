@@ -1,4 +1,4 @@
-package ar.edu.itba.ss;
+package ar.edu.itba.ss.Float;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ import java.util.PriorityQueue;
 
 public class Main {
     private static PriorityQueue<Event> events;
-    private static double currentTime = 0.0;
+    private static float currentTime = 0.0F;
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
@@ -25,25 +25,25 @@ public class Main {
 
         //Check if ball with collide with another in given time
         for (Ball b : balls) {
-            double timeToCollide = a.collides(b);
+            float timeToCollide = a.collides(b);
             events.add(new Event(currentTime + timeToCollide, EventType.BALL, a,
                     b));
         }
 
         for (Ball hole : holes) {
-            double timeToCollide = a.collides(hole);
+            float timeToCollide = a.collides(hole);
             events.add(new Event(currentTime + timeToCollide, EventType.HOLE, a,
                     hole));
         }
 
         // Check if ball will collide with horizontal wall
-        double timeToHorizontalWall = a.collidesY();
+        float timeToHorizontalWall = a.collidesY();
         events.add(
                 new Event(currentTime + timeToHorizontalWall, EventType.HWALL,
                         null, a));
 
         // Check if ball will collide with vertical wall
-        double timeToWallX = a.collidesX();
+        float timeToWallX = a.collidesX();
         events.add(
                 new Event(currentTime + timeToWallX, EventType.VWALL, a, null));
     }
@@ -186,7 +186,7 @@ public class Main {
 
  */
     public static void reRunSimulation(File fileOfPositions, List<Ball> balls) {
-        List<Pair<Double>> positions = FilesParser.readPositionsFile(
+        List<Pair<Float>> positions = FilesParser.readPositionsFile(
                 fileOfPositions);
         for (int i = 0; balls.size() > i && positions.size() > i; i++) {
             balls.get(i).setX(positions.get(i).getFirst());
@@ -195,10 +195,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        while (iterationWithThatYPosOfWhiteBall < 10) {
-//        }
-
-
         // Initialize holes
         Utils.initializeHoles(holes);
         // Initialize balls
@@ -207,9 +203,10 @@ public class Main {
                 Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
                 Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
         // Perturbate balls
-        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
-                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
-                Utils.whiteBallInitialVelY);
+//        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
+//                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
+//                Utils.whiteBallInitialVelY);
+
 
         System.out.println("Holes: ");
         for (Ball hole : holes) {
@@ -221,7 +218,7 @@ public class Main {
 
 //        Create animation file
         String directoryWhiteBallInitialPosY =
-                Double.toString(Utils.whiteBallInitialPosY);
+                Float.toString(Utils.whiteBallInitialPosY);
         // Create directory if it does not exist
         File directory =
                 new File(FilesParser.RESOURCES_PATH +
@@ -234,20 +231,6 @@ public class Main {
 
         // Para el debug
         // Si queremos volver a correr la animacion de vuelta
-        /**
-         * Si queremos tener la misma corrida:
-         * 1) Correr el programa con esto comentado:
-         *
-         * File onlyPositionFile = new File(directory + File.separator
-         *                 + "3_onlyXandY.txt");
-         * 2) Despues poner en donde dice "3_onlyXandY.txt" el nombre del
-         * archivo que queremos que se use para la corrida.
-         * 3) Comentar las 2 lineas de arriba de donde tenemos el archivo
-         * hardcodeado con el numero que queremos volver a correr
-         * 4) Descomentar esta linea:
-         * File onlyPositionFile = new File(directory + File.separator
-         *                 + "3_onlyXandY.txt");
-         **/
 
         File onlyPositionFile = new File(directory + File.separator
                 + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
@@ -257,15 +240,6 @@ public class Main {
 //                + "10_onlyXandY.txt");
 
 
-        /**
-         * Esto es para debugear: vamos a copiar en el archivo de solo
-         * posiciones las mismas pocisiones que se crean en balls. Entonces
-         * aunque cambiemos el nombre del archivo no cambia en nada. Solo
-         * pisamos ese archivo con las pos de esa corrida de balls.
-         *
-         * Por lo tanto solo nos sirve para tener esas pos inciales de las
-         * balls. Para tener una misma corrida
-         * OJO con el archivo que ponemos aca!!!! **/
 //        reRunSimulation(onlyPositionFile); // funciona!!
 //        // print all balls
 //        System.out.println("Balls: ");
