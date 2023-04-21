@@ -1,8 +1,9 @@
 package ar.edu.itba.ss;
 
-import com.sun.nio.sctp.AbstractNotificationHandler;
-
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +15,13 @@ public class Main {
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
-    private static final int iterationWithThatYPosOfWhiteBall = 1;
+    private static final int iterationWithThatYPosOfWhiteBall = 3;
+
 
     private static void createCollisions(Ball a) {
         if (a == null) return;
+        if (a.getType() == BallType.HOLE) return;
+        if (ballsInHoles.contains(a)) return;
 
         //Check if ball with collide with another in given time
         for (Ball b : balls) {
@@ -46,6 +50,7 @@ public class Main {
 
     private static void updateEventsTime(Ball a) {
         if (a == null || a.getType() == BallType.HOLE) return;
+        if (ballsInHoles.contains(a)) return;
 
         // Update time of events that do not contain ball a
         for (Event e : events) {
@@ -70,6 +75,8 @@ public class Main {
 
     private static void predict(Ball a) {
         if (a == null) return;
+        if (a.getType() == BallType.HOLE) return;
+        if (ballsInHoles.contains(a)) return;
 
         // Filter events to only remain the ones that do not include ball a
         events.removeIf(e -> (e.getA() != null && e.getA().equals(a)) ||
@@ -83,22 +90,25 @@ public class Main {
     public static void simulate(File fileAnimationFile) {
         events = new PriorityQueue<>();
         // Populate PQ
-        balls.stream().filter(b -> b.getType() == BallType.BALL)
-                .forEach(Main::createCollisions);
+        balls.forEach(Main::createCollisions);
         int index = 0;
+        int previos_index = index - 1;
 
         while (events.size() > 0) {
-            // Retrieve and delete impending event - will be one with minimum priority
-            if (balls.isEmpty()) return;
-            Event currentEvent = events.poll();
-            FilesParser.writeAnimationFile(fileAnimationFile, index, balls,
-                    List.of(holes));
 
-//            if (Double.isNaN(currentEvent.getTime())) {
-//                System.out.println(
-//                        "NaN event: " + currentEvent + "in index: " + index);
-//                return;
-//            }
+            if (index != previos_index) {
+                FilesParser.writeAnimationFile(fileAnimationFile, index, balls,
+                        List.of(holes));
+                previos_index++;
+            }
+
+            // Retrieve and delete impending event - will be one with minimum priority
+            if (balls.isEmpty()) {
+                System.out.println("Finished simulation with " + index +
+                        " iterations");
+                return;
+            }
+            Event currentEvent = events.poll();
 
             // Invalidated events are discarded
             if (!currentEvent.isValid()) continue;
@@ -125,17 +135,16 @@ public class Main {
                     a.bounceX();
                     break;
                 case HOLE:
-                    Optional<Ball> ballInHole = isBallInHole(a, b);
-                    if (ballInHole.isPresent()) {
-                        System.out.println(
-                                "Ball in hole: " + ballInHole.get().toString());
-                        System.out.println("Balls in table: " + balls.size());
-                        System.out.println("Iteration: " + index);
-                        balls.remove(ballInHole.get());
-                        ballsInHoles.add(ballInHole.get());
-                        removeEventsWith(ballInHole.get());
-                    }
+                    System.out.println(
+                            "Ball in hole: " + a.toString());
+                    System.out.println("Balls in table: " + balls.size());
+                    System.out.println("Iteration: " + index);
+                    balls.remove(a);
+                    ballsInHoles.add(a);
                     break;
+                default:
+                    throw new IllegalStateException(
+                            "Unexpected value: " + currentEvent.getEventType());
             }
             index++;
 
@@ -250,6 +259,25 @@ public class Main {
 //        System.out.println("Balls: ");
 //        balls.forEach(System.out::println);
 
+        try {
+            RandomAccessFile raf = new RandomAccessFile(onlyPositionFile, "rw");
+            raf.setLength(0);
+            raf.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            RandomAccessFile raf = new RandomAccessFile(animationFile, "rw");
+            raf.setLength(0);
+            raf.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         simulate(animationFile);
 

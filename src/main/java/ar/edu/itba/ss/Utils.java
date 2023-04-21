@@ -111,7 +111,7 @@ public class Utils {
         balls.add(createBall(balls.get(10).getX(), balls.get(10).getY(), -1.0
                 , 128, 128, 0));
 
-//        balls.forEach(Utils::perturbeBall);
+//        balls.forEach(Utils::perturbBall);
 //        for (Ball ball : balls) {
 //            if (ball.getX() == whiteBallInitialPosX &&
 //                    ball.getY() == whiteBallInitialPosY &&
@@ -119,7 +119,7 @@ public class Utils {
 //                    ball.getVy() == whiteBallInitialVelY) {
 //                continue;
 //            }
-//            perturbeBall(ball);
+//            perturbBall(ball);
 //        }
     }
 
@@ -135,7 +135,7 @@ public class Utils {
                     ball.getVy() == whiteBallInitialVelY) {
                 continue;
             }
-            perturbeBall(ball);
+            perturbBall(ball);
         }
     }
 
@@ -150,7 +150,7 @@ public class Utils {
                 colorG, colorB);
     }
 
-    private static void perturbeBall(Ball ball) {
+    private static void perturbBall(Ball ball) {
         double epsilon = bottomEpsilon +
                 (topEpsilon - bottomEpsilon) * random.nextDouble();
         double moveInX = epsilon * (random.nextBoolean() ? 1 : -1);

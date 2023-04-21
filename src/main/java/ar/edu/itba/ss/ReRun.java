@@ -19,6 +19,8 @@ public class ReRun {
 
     private static void createCollisions(Ball a) {
         if (a == null) return;
+        if (a.getType() == BallType.HOLE) return;
+        if (reRunBallsInHoles.contains(a)) return;
 
         //Check if ball with collide with another in given time
         for (Ball b : reRunBalls) {
@@ -51,6 +53,7 @@ public class ReRun {
 
     private static void updateEventsTime(Ball a) {
         if (a == null || a.getType() == BallType.HOLE) return;
+        if (reRunBallsInHoles.contains(a)) return;
 
         // Update time of events that do not contain ball a
         for (Event e : reRunEvents) {
@@ -75,6 +78,8 @@ public class ReRun {
 
     private static void predict(Ball a) {
         if (a == null) return;
+        if (a.getType() == BallType.HOLE) return;
+        if (reRunBallsInHoles.contains(a)) return;
 
         // Filter events to only remain the ones that do not include ball a
         reRunEvents.removeIf(e -> (e.getA() != null && e.getA().equals(a)) ||
@@ -88,13 +93,21 @@ public class ReRun {
     public static void simulate(File fileAnimationFile) {
         reRunEvents = new PriorityQueue<>();
         // Populate PQ
-        reRunBalls.stream().filter(b -> b.getType() == BallType.BALL)
-                .forEach(ReRun::createCollisions);
+//        reRunBalls
+//                .stream()
+//                .filter(b -> b.getType() == BallType.BALL)
+//                .forEach(ReRun::createCollisions);
+        reRunBalls.forEach(ReRun::createCollisions);
         int index = 0;
 
         while (reRunEvents.size() > 0) {
             // Retrieve and delete impending event - will be one with minimum priority
-            if (reRunBalls.isEmpty()) return;
+            if (reRunBalls.isEmpty()) {
+                System.out.println("Finished simulation with " + index +
+                        " iterations");
+                return;
+            }
+
             Event currentEvent = reRunEvents.poll();
             FilesParser.writeAnimationFile(fileAnimationFile, index, reRunBalls,
                     List.of(reRunHoles));
@@ -104,6 +117,7 @@ public class ReRun {
 //                        "NaN event: " + currentEvent + "in index: " + index);
 //                return;
 //            }
+
 
             // Invalidated events are discarded
             if (!currentEvent.isValid()) continue;
@@ -130,17 +144,16 @@ public class ReRun {
                     a.bounceX();
                     break;
                 case HOLE:
-                    Optional<Ball> ballInHole = isBallInHole(a, b);
-                    if (ballInHole.isPresent()) {
-                        System.out.println(
-                                "Ball in hole: " + ballInHole.get().toString());
-                        System.out.println("Balls in table: " + reRunBalls.size());
-                        System.out.println("Iteration: " + index);
-                        reRunBalls.remove(ballInHole.get());
-                        reRunBallsInHoles.add(ballInHole.get());
-                        removeEventsWith(ballInHole.get());
-                    }
+                    System.out.println(
+                            "Ball in hole: " + a.toString());
+                    System.out.println("Balls in table: " + reRunBalls.size());
+                    System.out.println("Iteration: " + index);
+                    reRunBalls.remove(a);
+                    reRunBallsInHoles.add(a);
                     break;
+                default:
+                    throw new IllegalStateException(
+                            "Unexpected value: " + currentEvent.getEventType());
             }
             index++;
 
