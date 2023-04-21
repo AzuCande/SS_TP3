@@ -1,6 +1,7 @@
 package ar.edu.itba.ss;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -81,7 +82,10 @@ public class Main {
         createCollisions(a);
     }
 
+    static List<Long> times = new ArrayList<>();
+
     private static void simulate(File fileAnimationFile) {
+
         events = new PriorityQueue<>();
         // Populate PQ
         balls.forEach(Main::createCollisions);
@@ -107,6 +111,9 @@ public class Main {
                 ball.move(currentEvent.getTime() - currentTime);
             }
             currentTime = currentEvent.getTime();
+
+            times.add(Instant.now().toEpochMilli());
+
 
             // Analyze event
             switch (currentEvent.getEventType()) {
@@ -175,9 +182,17 @@ public class Main {
 
         FilesParser.writeAnimationFile(animationFile, 0, balls,
                 List.of(holes));
+
+        Instant startTime = Instant.now();
         simulate(animationFile);
+        long elapsedTime = Instant.now().toEpochMilli() - startTime.toEpochMilli();
 
         System.out.println("Finished simulation with all balls in holes");
+        System.out.println("Elapsed Time: " + elapsedTime);
+
+//        for(Long time: times) {
+//            System.out.println(time);
+//        }
     }
 
 
