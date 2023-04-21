@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+/*
 public class ReRun {
     private static PriorityQueue<Event> reRunEvents;
     private static double reRunCurrentTime = 0.0;
@@ -212,6 +213,8 @@ public class ReRun {
          * Aca ponemos el archivo que queremos volver a correr.
          * Cambiar el numero de arriba (reRunFileNumber)
          * */
+
+/*
         File onlyPositionFile = new File(directory + File.separator
                 + reRunFileNumber + "_onlyXandY.txt");
 
@@ -250,3 +253,4 @@ public class ReRun {
         System.out.println("Finished reRun");
     }
 }
+*/
