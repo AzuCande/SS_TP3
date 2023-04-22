@@ -159,30 +159,7 @@ public class Main {
         }
         System.out.println("Balls size: " + balls.size());
     }
-/**
- * TODO: check this
- *
-    private static void removeEventsWith(Ball toRemove) {
-        events.removeIf(event ->
-                (event.getA() != null && event.getA().equals(toRemove)) ||
-                        (event.getB() != null &&
-                                event.getB().equals(toRemove)));
-    }
 
-    private static Optional<Ball> isBallInHole(Ball a, Ball b) {
-        if (a.getType() == BallType.BALL && b.getType() == BallType.BALL) {
-            return Optional.empty();
-        }
-        if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE) {
-            return Optional.of(a);
-        }
-        if (b.getType() == BallType.BALL && a.getType() == BallType.HOLE) {
-            return Optional.of(b);
-        }
-        return Optional.empty();
-    }
-
- */
     public static void reRunSimulation(File fileOfPositions, List<Ball> balls) {
         List<Pair<Double>> positions = FilesParser.readPositionsFile(
                 fileOfPositions);
