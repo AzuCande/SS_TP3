@@ -158,4 +158,18 @@ public class FilesParser {
 
         return lines;
     }
+
+    public static void writeTimesFile(File fileName, List<Float> times,
+                                      Float currentTime) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (Float time : times) {
+                writer.append(String.valueOf(time))
+                        .append("\n");
+            }
+            writer.append("Total Time: ").append(String.valueOf(currentTime))
+                    .append("\n");
+        } catch (Exception e) {
+            System.err.println("Error while writing times file");
+        }
+    }
 }

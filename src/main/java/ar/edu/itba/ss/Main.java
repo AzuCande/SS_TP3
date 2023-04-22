@@ -1,9 +1,6 @@
 package ar.edu.itba.ss;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +12,7 @@ public class Main {
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
-    public static final int iterationWithThatYPosOfWhiteBall = 3;
+    public static final int iterationWithThatYPosOfWhiteBall = 56;
 
 
     private static void createCollisions(Ball a) {
@@ -226,11 +223,14 @@ public class Main {
 
         File onlyPositionFile = new File(directory + File.separator
                 + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
+
+        File timesFile = new File(directory + File.separator
+                + iterationWithThatYPosOfWhiteBall + "_times.txt");
+
         FilesParser.writeOnlyPositions(onlyPositionFile, balls);
 
 //        File onlyPositionFile = new File(directory + File.separator
 //                + "10_onlyXandY.txt");
-
 
         /**
          * Esto es para debugear: vamos a copiar en el archivo de solo
@@ -246,37 +246,24 @@ public class Main {
 //        System.out.println("Balls: ");
 //        balls.forEach(System.out::println);
 
-        try {
-            RandomAccessFile raf = new RandomAccessFile(onlyPositionFile, "rw");
-            raf.setLength(0);
-            raf.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // delete content if has something in it
+        FilesParser.deleteFileContent(onlyPositionFile);
+        FilesParser.deleteFileContent(animationFile);
+        FilesParser.deleteFileContent(timesFile);
 
-        try {
-            RandomAccessFile raf = new RandomAccessFile(animationFile, "rw");
-            raf.setLength(0);
-            raf.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
         FilesParser.writeAnimationFile(animationFile, 0, balls,
                 List.of(holes));
 
         simulate(animationFile);
 
         System.out.println("Finished simulation with all balls in holes");
-        System.out.println("Total Time: " + currentTime);
+//        System.out.println("Total Time: " + currentTime);
 
-        for(Double time: times) {
-            System.out.println(time);
-        }
+        FilesParser.writeTimesFile(timesFile, times, currentTime);
+//        for(Double time: times) {
+//            System.out.println(time);
+//        }
     }
 
 }

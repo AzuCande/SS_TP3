@@ -1,9 +1,6 @@
 package ar.edu.itba.ss;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -157,5 +154,31 @@ public class FilesParser {
         }
 
         return lines;
+    }
+
+    public static void writeTimesFile(File fileName, List<Double> times,
+                                      double currentTime) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (Double time : times) {
+                writer.append(String.valueOf(time))
+                        .append("\n");
+            }
+            writer.append("Total Time: ").append(String.valueOf(currentTime))
+                    .append("\n");
+        } catch (Exception e) {
+            System.err.println("Error while writing times file");
+        }
+    }
+
+    public static void deleteFileContent(File fileName) {
+        try {
+            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+            raf.setLength(0);
+            raf.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

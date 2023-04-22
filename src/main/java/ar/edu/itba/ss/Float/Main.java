@@ -1,9 +1,6 @@
 package ar.edu.itba.ss.Float;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,7 @@ public class Main {
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
-    private static final int floatIterationWithThatYPosOfWhiteBall = 3;
+    private static final int floatIterationWithThatYPosOfWhiteBall = 56;
 
 
     private static void createCollisions(Ball a) {
@@ -163,29 +160,6 @@ public class Main {
         System.out.println("Balls size: " + balls.size());
     }
 
-    /**
-     * TODO: check this
-     * <p>
-     * private static void removeEventsWith(Ball toRemove) {
-     * events.removeIf(event ->
-     * (event.getA() != null && event.getA().equals(toRemove)) ||
-     * (event.getB() != null &&
-     * event.getB().equals(toRemove)));
-     * }
-     * <p>
-     * private static Optional<Ball> isBallInHole(Ball a, Ball b) {
-     * if (a.getType() == BallType.BALL && b.getType() == BallType.BALL) {
-     * return Optional.empty();
-     * }
-     * if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE) {
-     * return Optional.of(a);
-     * }
-     * if (b.getType() == BallType.BALL && a.getType() == BallType.HOLE) {
-     * return Optional.of(b);
-     * }
-     * return Optional.empty();
-     * }
-     */
     public static void reRunSimulation(File fileOfPositions, List<Ball> balls) {
         List<Pair<Float>> positions = FilesParser.readPositionsFile(
                 fileOfPositions);
@@ -194,7 +168,6 @@ public class Main {
             balls.get(i).setY(positions.get(i).getSecond());
         }
     }
-
     public static void main(String[] args) {
         // Initialize holes
         Utils.initializeHoles(holes);
@@ -238,7 +211,10 @@ public class Main {
                 + "float_" + floatIterationWithThatYPosOfWhiteBall +
                 "_onlyXandY" +
                 ".txt");
-        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
+
+        File floatTimesFile = new File(directory + File.separator +
+                floatIterationWithThatYPosOfWhiteBall +
+                "_times_in_float.txt");
 
 //        File onlyPositionFile = new File(directory + File.separator
 //                + "10_onlyXandY.txt");
@@ -250,35 +226,22 @@ public class Main {
         if (file.exists() && file.length() > 0) {
             // El archivo existe y no está vacío
             reRunSimulation(file, balls);
+            // print all balls
+            System.out.println("Balls: ");
+            balls.forEach(System.out::println);
+
         } else {
             // El archivo no existe o está vacío
             System.out.println("File does not exist or is empty");
             exit(1);
         }
-//        // print all balls
-        System.out.println("Balls: ");
-        balls.forEach(System.out::println);
 
-        try {
-            RandomAccessFile raf = new RandomAccessFile(onlyPositionFile, "rw");
-            raf.setLength(0);
-            raf.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // delete content if has something in it
+        ar.edu.itba.ss.FilesParser.deleteFileContent(onlyPositionFile);
+        ar.edu.itba.ss.FilesParser.deleteFileContent(animationFile);
+        ar.edu.itba.ss.FilesParser.deleteFileContent(floatTimesFile);
 
-        try {
-            RandomAccessFile raf = new RandomAccessFile(animationFile, "rw");
-            raf.setLength(0);
-            raf.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
         FilesParser.writeAnimationFile(animationFile, 0, balls,
                 List.of(holes));
 
@@ -286,11 +249,13 @@ public class Main {
         simulate(animationFile);
 
         System.out.println("Finished simulation with all balls in holes");
-        System.out.println("Total Time: " + currentTime);
+//        System.out.println("Total Time: " + currentTime);
 
-        for (Float time : times) {
-            System.out.println(time);
-        }
+
+        FilesParser.writeTimesFile(floatTimesFile, times, currentTime);
+//        for (Float time : times) {
+//            System.out.println(time);
+//        }
     }
 
 }
