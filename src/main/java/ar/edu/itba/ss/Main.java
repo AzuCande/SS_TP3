@@ -82,7 +82,7 @@ public class Main {
         createCollisions(a);
     }
 
-    static List<Long> times = new ArrayList<>();
+    static List<Double> times = new ArrayList<>();
 
     private static void simulate(File fileAnimationFile) {
 
@@ -110,10 +110,8 @@ public class Main {
             for (Ball ball : balls) {
                 ball.move(currentEvent.getTime() - currentTime);
             }
+            times.add(Math.abs(currentEvent.getTime() - currentTime));
             currentTime = currentEvent.getTime();
-
-            times.add(Instant.now().toEpochMilli());
-
 
             // Analyze event
             switch (currentEvent.getEventType()) {
@@ -183,16 +181,14 @@ public class Main {
         FilesParser.writeAnimationFile(animationFile, 0, balls,
                 List.of(holes));
 
-        Instant startTime = Instant.now();
         simulate(animationFile);
-        long elapsedTime = Instant.now().toEpochMilli() - startTime.toEpochMilli();
 
         System.out.println("Finished simulation with all balls in holes");
-        System.out.println("Elapsed Time: " + elapsedTime);
+        System.out.println("Total Time: " + currentTime);
 
-//        for(Long time: times) {
-//            System.out.println(time);
-//        }
+        for(Double time: times) {
+            System.out.println(time);
+        }
     }
 
 
