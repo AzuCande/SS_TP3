@@ -15,7 +15,7 @@ public class Main {
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
-    private static final int iterationWithThatYPosOfWhiteBall = 3;
+    public static final int iterationWithThatYPosOfWhiteBall = 3;
 
 
     private static void createCollisions(Ball a) {

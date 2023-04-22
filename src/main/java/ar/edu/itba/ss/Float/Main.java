@@ -9,13 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import static java.lang.System.exit;
+
 public class Main {
     private static PriorityQueue<Event> events;
     private static float currentTime = 0.0F;
     private static final Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
-    private static final int iterationWithThatYPosOfWhiteBall = 3;
+    private static final int floatIterationWithThatYPosOfWhiteBall = 3;
 
 
     private static void createCollisions(Ball a) {
@@ -161,30 +163,30 @@ public class Main {
         }
         System.out.println("Balls size: " + balls.size());
     }
-/**
- * TODO: check this
- *
-    private static void removeEventsWith(Ball toRemove) {
-        events.removeIf(event ->
-                (event.getA() != null && event.getA().equals(toRemove)) ||
-                        (event.getB() != null &&
-                                event.getB().equals(toRemove)));
-    }
 
-    private static Optional<Ball> isBallInHole(Ball a, Ball b) {
-        if (a.getType() == BallType.BALL && b.getType() == BallType.BALL) {
-            return Optional.empty();
-        }
-        if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE) {
-            return Optional.of(a);
-        }
-        if (b.getType() == BallType.BALL && a.getType() == BallType.HOLE) {
-            return Optional.of(b);
-        }
-        return Optional.empty();
-    }
-
- */
+    /**
+     * TODO: check this
+     * <p>
+     * private static void removeEventsWith(Ball toRemove) {
+     * events.removeIf(event ->
+     * (event.getA() != null && event.getA().equals(toRemove)) ||
+     * (event.getB() != null &&
+     * event.getB().equals(toRemove)));
+     * }
+     * <p>
+     * private static Optional<Ball> isBallInHole(Ball a, Ball b) {
+     * if (a.getType() == BallType.BALL && b.getType() == BallType.BALL) {
+     * return Optional.empty();
+     * }
+     * if (a.getType() == BallType.BALL && b.getType() == BallType.HOLE) {
+     * return Optional.of(a);
+     * }
+     * if (b.getType() == BallType.BALL && a.getType() == BallType.HOLE) {
+     * return Optional.of(b);
+     * }
+     * return Optional.empty();
+     * }
+     */
     public static void reRunSimulation(File fileOfPositions, List<Ball> balls) {
         List<Pair<Float>> positions = FilesParser.readPositionsFile(
                 fileOfPositions);
@@ -224,7 +226,8 @@ public class Main {
                 new File(FilesParser.RESOURCES_PATH +
                         directoryWhiteBallInitialPosY);
         directory.mkdir();
-        String animationFullFileName = iterationWithThatYPosOfWhiteBall + "_" +
+        String animationFullFileName = floatIterationWithThatYPosOfWhiteBall +
+                "_float_" +
                 FilesParser.ANIMATION_FILE;
         File animationFile =
                 new File(directory + File.separator + animationFullFileName);
@@ -233,17 +236,29 @@ public class Main {
         // Si queremos volver a correr la animacion de vuelta
 
         File onlyPositionFile = new File(directory + File.separator
-                + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
+                + "float_" + floatIterationWithThatYPosOfWhiteBall +
+                "_onlyXandY" +
+                ".txt");
         FilesParser.writeOnlyPositions(onlyPositionFile, balls);
 
 //        File onlyPositionFile = new File(directory + File.separator
 //                + "10_onlyXandY.txt");
 
-
-//        reRunSimulation(onlyPositionFile); // funciona!!
+        File file =
+                new File(directory + File.separator +
+                        ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                        "_onlyXandY.txt");
+        if (file.exists() && file.length() > 0) {
+            // El archivo existe y no está vacío
+            reRunSimulation(file, balls);
+        } else {
+            // El archivo no existe o está vacío
+            System.out.println("File does not exist or is empty");
+            exit(1);
+        }
 //        // print all balls
-//        System.out.println("Balls: ");
-//        balls.forEach(System.out::println);
+        System.out.println("Balls: ");
+        balls.forEach(System.out::println);
 
         try {
             RandomAccessFile raf = new RandomAccessFile(onlyPositionFile, "rw");
@@ -270,7 +285,8 @@ public class Main {
 
         Instant startTime = Instant.now();
         simulate(animationFile);
-        long elapsedTime = Instant.now().toEpochMilli() - startTime.toEpochMilli();
+        long elapsedTime =
+                Instant.now().toEpochMilli() - startTime.toEpochMilli();
 
         System.out.println("Finished simulation with all balls in holes");
         System.out.println("Elapsed Time: " + elapsedTime);
