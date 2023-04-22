@@ -15,6 +15,7 @@ public class Main {
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
     private static final int floatIterationWithThatYPosOfWhiteBall = 56;
+    private static final boolean flagOfReRunFloat = true;
 
 
     private static void createCollisions(Ball a) {
@@ -168,7 +169,8 @@ public class Main {
             balls.get(i).setY(positions.get(i).getSecond());
         }
     }
-    public static void main(String[] args) {
+
+    private static void allMain() {
         // Initialize holes
         Utils.initializeHoles(holes);
         // Initialize balls
@@ -176,21 +178,12 @@ public class Main {
                 Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
                 Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
                 Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
-        // Perturbate balls
-//        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
-//                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
-//                Utils.whiteBallInitialVelY);
-
 
         System.out.println("Holes: ");
         for (Ball hole : holes) {
             System.out.println(hole);
         }
-        // print all balls
-        System.out.println("Balls: ");
-        balls.forEach(System.out::println);
 
-//        Create animation file
         String directoryWhiteBallInitialPosY =
                 Float.toString(Utils.whiteBallInitialPosY);
         // Create directory if it does not exist
@@ -198,43 +191,45 @@ public class Main {
                 new File(FilesParser.RESOURCES_PATH +
                         directoryWhiteBallInitialPosY);
         directory.mkdir();
-        String animationFullFileName = floatIterationWithThatYPosOfWhiteBall +
-                "_float_" +
-                FilesParser.ANIMATION_FILE;
-        File animationFile =
-                new File(directory + File.separator + animationFullFileName);
-
-        // Para el debug
-        // Si queremos volver a correr la animacion de vuelta
-
-        File onlyPositionFile = new File(directory + File.separator
-                + "float_" + floatIterationWithThatYPosOfWhiteBall +
-                "_onlyXandY" +
-                ".txt");
-
-        File floatTimesFile = new File(directory + File.separator +
-                floatIterationWithThatYPosOfWhiteBall +
-                "_times_in_float.txt");
-
-//        File onlyPositionFile = new File(directory + File.separator
-//                + "10_onlyXandY.txt");
-
-        File file =
+        String animationFullFileName =
+                ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                        "_float_" +
+                        FilesParser.ANIMATION_FILE;
+        File animationFile;
+        File onlyPositionFile =
                 new File(directory + File.separator +
                         ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
                         "_onlyXandY.txt");
-        if (file.exists() && file.length() > 0) {
-            // El archivo existe y no está vacío
-            reRunSimulation(file, balls);
-            // print all balls
-            System.out.println("Balls: ");
-            balls.forEach(System.out::println);
+        File floatTimesFile;
+
+        if (flagOfReRunFloat && onlyPositionFile.exists() &&
+                onlyPositionFile.length() > 0) {
+            // El archivo existe y no esta vacio
+            System.out.println("Re-running simulation");
+            reRunSimulation(onlyPositionFile, balls);
+            floatTimesFile = new File(directory + File.separator +
+                    ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                    "_times_in_float_bis.txt");
+            onlyPositionFile = new File(directory + File.separator +
+                    ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                    "_onlyXandY_in_float_bis.txt");
+            animationFile = new File(directory + File.separator +
+                    ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                    "_float_animation_bis.txt");
 
         } else {
-            // El archivo no existe o está vacío
-            System.out.println("File does not exist or is empty");
-            exit(1);
+            floatTimesFile = new File(directory + File.separator +
+                    ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                    "_times_in_float.txt");
+            animationFile = new File(directory + File.separator +
+                    animationFullFileName);
+            onlyPositionFile = new File(directory + File.separator +
+                    ar.edu.itba.ss.Main.iterationWithThatYPosOfWhiteBall +
+                    "_onlyXandY_in_float.txt");
         }
+        // print all balls
+        System.out.println("Balls: ");
+        balls.forEach(System.out::println);
 
         // delete content if has something in it
         ar.edu.itba.ss.FilesParser.deleteFileContent(onlyPositionFile);
@@ -245,17 +240,14 @@ public class Main {
         FilesParser.writeAnimationFile(animationFile, 0, balls,
                 List.of(holes));
 
-
         simulate(animationFile);
-
-        System.out.println("Finished simulation with all balls in holes");
-//        System.out.println("Total Time: " + currentTime);
-
-
         FilesParser.writeTimesFile(floatTimesFile, times, currentTime);
-//        for (Float time : times) {
-//            System.out.println(time);
-//        }
+        System.out.println("Finished simulation with all balls in holes");
+    }
+
+    public static void main(String[] args) {
+        allMain();
+        System.out.print("End allMain() in Float");
     }
 
 }

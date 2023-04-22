@@ -9,10 +9,11 @@ import java.util.PriorityQueue;
 public class Main {
     private static PriorityQueue<Event> events;
     private static double currentTime = 0.0;
-    private static final Ball[] holes = new Ball[6];
+    private static Ball[] holes = new Ball[6];
     private static final List<Ball> balls = new ArrayList<>();
     public static final List<Ball> ballsInHoles = new ArrayList<>();
-    public static final int iterationWithThatYPosOfWhiteBall = 56;
+    public static int iterationWithThatYPosOfWhiteBall = 24;
+    private static final boolean flagOfReRun = true;
 
 
     private static void createCollisions(Ball a) {
@@ -166,11 +167,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
-//        while (iterationWithThatYPosOfWhiteBall < 10) {
-//        }
-
-
+    private static void allMain() {
         // Initialize holes
         Utils.initializeHoles(holes);
         // Initialize balls
@@ -178,18 +175,11 @@ public class Main {
                 Utils.whiteBallInitialPosX, Utils.whiteBallInitialPosY,
                 Utils.whiteBallInitialVelX, Utils.whiteBallInitialVelY,
                 Utils.firstBallInitialPosX, Utils.firstBallInitialPosY);
-        // Perturbate balls
-        Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
-                Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
-                Utils.whiteBallInitialVelY);
 
         System.out.println("Holes: ");
         for (Ball hole : holes) {
             System.out.println(hole);
         }
-        // print all balls
-        System.out.println("Balls: ");
-        balls.forEach(System.out::println);
 
 //        Create animation file
         String directoryWhiteBallInitialPosY =
@@ -201,50 +191,41 @@ public class Main {
         directory.mkdir();
         String animationFullFileName = iterationWithThatYPosOfWhiteBall + "_" +
                 FilesParser.ANIMATION_FILE;
-        File animationFile =
-                new File(directory + File.separator + animationFullFileName);
 
-        // Para el debug
-        // Si queremos volver a correr la animacion de vuelta
-        /**
-         * Si queremos tener la misma corrida:
-         * 1) Correr el programa con esto comentado:
-         *
-         * File onlyPositionFile = new File(directory + File.separator
-         *                 + "3_onlyXandY.txt");
-         * 2) Despues poner en donde dice "3_onlyXandY.txt" el nombre del
-         * archivo que queremos que se use para la corrida.
-         * 3) Comentar las 2 lineas de arriba de donde tenemos el archivo
-         * hardcodeado con el numero que queremos volver a correr
-         * 4) Descomentar esta linea:
-         * File onlyPositionFile = new File(directory + File.separator
-         *                 + "3_onlyXandY.txt");
-         **/
+        File animationFile;
+        File onlyPositionFile =
+                new File(directory + File.separator +
+                        iterationWithThatYPosOfWhiteBall +
+                        "_onlyXandY.txt");
+        File timesFile;
 
-        File onlyPositionFile = new File(directory + File.separator
-                + iterationWithThatYPosOfWhiteBall + "_onlyXandY.txt");
+        if (flagOfReRun && onlyPositionFile.exists() &&
+                onlyPositionFile.length() > 0) {
+            reRunSimulation(onlyPositionFile, balls);
+            timesFile = new File(directory + File.separator
+                    + iterationWithThatYPosOfWhiteBall + "_times_bis.txt");
+            onlyPositionFile = new File(directory + File.separator
+                    + iterationWithThatYPosOfWhiteBall + "_onlyXandY_bis.txt");
+            animationFile = new File(directory + File.separator
+                    + iterationWithThatYPosOfWhiteBall + "_animation_bis.txt");
+        } else {
+            Utils.perturbateBalls(balls, Utils.whiteBallInitialPosX,
+                    Utils.whiteBallInitialPosY, Utils.whiteBallInitialVelX,
+                    Utils.whiteBallInitialVelY);
 
-        File timesFile = new File(directory + File.separator
-                + iterationWithThatYPosOfWhiteBall + "_times.txt");
-
-        FilesParser.writeOnlyPositions(onlyPositionFile, balls);
+            timesFile = new File(directory + File.separator
+                    + iterationWithThatYPosOfWhiteBall + "_times.txt");
+            animationFile =
+                    new File(
+                            directory + File.separator + animationFullFileName);
+        }
+        // print all balls
+        System.out.println("Balls: ");
+        balls.forEach(System.out::println);
 
 //        File onlyPositionFile = new File(directory + File.separator
 //                + "10_onlyXandY.txt");
 
-        /**
-         * Esto es para debugear: vamos a copiar en el archivo de solo
-         * posiciones las mismas pocisiones que se crean en balls. Entonces
-         * aunque cambiemos el nombre del archivo no cambia en nada. Solo
-         * pisamos ese archivo con las pos de esa corrida de balls.
-         *
-         * Por lo tanto solo nos sirve para tener esas pos inciales de las
-         * balls. Para tener una misma corrida
-         * OJO con el archivo que ponemos aca!!!! **/
-//        reRunSimulation(onlyPositionFile); // funciona!!
-//        // print all balls
-//        System.out.println("Balls: ");
-//        balls.forEach(System.out::println);
 
         // delete content if has something in it
         FilesParser.deleteFileContent(onlyPositionFile);
@@ -257,12 +238,23 @@ public class Main {
 
         simulate(animationFile);
 
-        System.out.println("Finished simulation with all balls in holes");
-//        System.out.println("Total Time: " + currentTime);
-
         FilesParser.writeTimesFile(timesFile, times, currentTime);
-//        for(Double time: times) {
-//            System.out.println(time);
+
+        System.out.println("Finished simulation with all balls in holes");
+
+    }
+
+    public static void main(String[] args) {
+        allMain();
+        System.out.print("End allMain()");
+//        while (iterationWithThatYPosOfWhiteBall <= 3+3+3) {
+//            allMain();
+//            events = new PriorityQueue<>();
+//            currentTime = 0.0;
+//            holes = new Ball[6];
+//            balls = new ArrayList<>();
+//            ballsInHoles = new ArrayList<>();
+//            iterationWithThatYPosOfWhiteBall++;
 //        }
     }
 

@@ -175,8 +175,6 @@ public class FilesParser {
             RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
             raf.setLength(0);
             raf.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
