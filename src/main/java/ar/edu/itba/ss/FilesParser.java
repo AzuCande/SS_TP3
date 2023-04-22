@@ -12,6 +12,8 @@ public class FilesParser {
     public final static String DYNAMIC_FILE = "dynamic.txt";
     public final static String STATIC_FILE = "static.txt";
     public final static String ANIMATION_FILE = "animation.txt";
+    public final static String TIME_FILE = "time-between-events.txt";
+    public final static String FINAL_TIME_FILE = "final-time.txt";
 
     public static void parseStaticFile() {
         File staticFile = new File(RESOURCES_PATH + STATIC_FILE);
@@ -124,4 +126,12 @@ public class FilesParser {
         writeCollectionToFileLines(writer, ballsList);
 //        writer.append("\n");
     }
+
+    public static void writeTimeFile(double time, String fileName) throws IOException {
+        File timeFile = new File(RESOURCES_PATH + fileName);
+        FileWriter fileWriter = new FileWriter(timeFile, true);
+        fileWriter.write(time + "\n");
+        fileWriter.close();
+    }
+
 }

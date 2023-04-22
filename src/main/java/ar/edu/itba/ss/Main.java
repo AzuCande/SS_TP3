@@ -1,6 +1,7 @@
 package ar.edu.itba.ss;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -186,8 +187,16 @@ public class Main {
         System.out.println("Finished simulation with all balls in holes");
         System.out.println("Total Time: " + currentTime);
 
-        for(Double time: times) {
-            System.out.println(time);
+//        for(Double time: times) {
+//            System.out.println(time);
+//        }
+        double averageTime = times.stream().mapToDouble(Double::doubleValue)
+                .average().orElse(0.0);
+        try {
+            FilesParser.writeTimeFile(currentTime, FilesParser.FINAL_TIME_FILE);
+            FilesParser.writeTimeFile(averageTime, FilesParser.TIME_FILE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
