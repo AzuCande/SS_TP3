@@ -11,7 +11,7 @@ public class Utils {
     public static Double particleRadius = 5.7/2;
     public static Double whiteBallInitialPosX = 56.0;
     public static Double whiteBallInitialPosY = 56.0;
-    public static Double whiteBallInitialVelX = 200.0;
+    public static Double whiteBallInitialVelX = 500.0;
     public static Double whiteBallInitialVelY = 0.0;
     public static Double firstBallInitialPosX = 168.0;
     public static Double firstBallInitialPosY = 56.0;
